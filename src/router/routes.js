@@ -28,12 +28,6 @@ const routes = [
         { path: '',  name: 'home', component: Home ,meta: { requiresAuth: true } },
         { path: '/notes',  name: 'notes', component: Notes, meta: { requiresAuth: true }  },
         { path: '/items/search', name: 'SearchItem', component: SearchItem,meta: { requiresAuth: true }, props: false, },
-
-        /* { path: '/autori', component: Autori, children: [
-            { path: '', name: 'autori', component: ListAutori, meta: { settings: settings.autore} },
-            { path: 'create', name: 'createAutore', component: CreateAutore },
-            { path: 'edit/:id', name: 'editAutore', component: EditAutore, props: true, },
-        ], meta: { requiresAuth: true } }, */
         { path: '/items/:collection', component: Items, children: [
             { path: '', name: 'listItems', component: ListItems },
             { path: 'create', name: 'createItem', component: CreateItem, props: true, },
@@ -43,12 +37,6 @@ const routes = [
         ],props: true, meta: { requiresAuth: true } },
         { path: '/login',  name: 'login', component: Login },
         { path: '/logout',  name: 'logout', component: Logout },
-        /* { path: '/test/:username',  name: 'test', component: Test },
-        { path: '/opera/:id',  name: 'opera', component: Opera },
-        { path: '/opere',  name: 'opere', components: {
-            default: Opere,
-            drawer: Drawer,
-        }}, */
         { path: '/:pathMatch(.*)*', name: 'NotFound', component: PageNotFound },
 
     ] },

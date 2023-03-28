@@ -18,7 +18,7 @@
         aria-describedby="inputGroup-sizing-sm"
         id="resultAutore"
       />
-      <h5 class="card-title">Sogetto (SGTI):</h5>
+      <h5 class="card-title">Soggetto (SGTI):</h5>
       <input
         type="text"
         class="form-control"
@@ -72,8 +72,9 @@
         aria-describedby="inputGroup-sizing-sm"
         value="50"
         id="limit"
+        @input="infoQty()"
       />
-      <div style="float: right">
+      <!-- <div style="float: right">
         Ricerca:
         <input
           type="text"
@@ -82,24 +83,24 @@
           id="ricercaBar"
           v-on:keyup="filterTable()"
         />
-      </div>
+      </div> -->
       <br />
       <div class="form-check" style="float: right">
         <input
           class="form-check-input"
           type="radio"
-          name="flexRadioDefault"
+          name="flexRadioDisabled"
           id="flexRadioDefault1"
           checked
         />
         <label class="form-check-label" for="flexRadioDefault1"> Llista </label>
       </div>
-      <div class="form-check" style="float: right">
+      <div class="form-check" style="float: right;margin-right:10px">
         <input
           class="form-check-input"
           type="radio"
-          name="flexRadioDefault"
-          id="flexRadioDefault2"
+          name="flexRadioDisabled"
+          id="flexRadioDefault2"  disabled
         />
         <label class="form-check-label" for="flexRadioDefault2"> Carta </label>
       </div>
@@ -186,6 +187,11 @@ export default {
       name: "createItem",
       params: { collection: collection.value },
     }));
+    function infoQty() {
+      let resultLimit = document.getElementById("limit").value;
+      const { data = [] } = itemsFiltered;
+      items.value = data.slice(0, resultLimit);
+    }
     async function fetchData() {
       let resultLimit = document.getElementById("limit").value;
       let resultID = document.getElementById("resultID").value;
@@ -197,7 +203,7 @@ export default {
       let resultMTC = document.getElementById("resultMTC").value;
 
       let query = {
-        limit: resultLimit,
+        limit: -1,
         filter: {},
       };
       try {
@@ -297,7 +303,6 @@ export default {
           .items(collection.value)
           .readByQuery(query);
         itemsFiltered = response;
-        console.log(response);
         const { data = [] } = response;
         if (data.length < 1) {
           items.value = null;
@@ -307,26 +312,34 @@ export default {
       } catch (error) {
         items.value = null;
       }
+      infoQty();
     }
 
     function filterTable() {
-      const ricercaBar = document
-        .getElementById("ricercaBar")
-        .value.toLowerCase();
-      const filteredItems = itemsFiltered.data.filter((item) => {
-        for (let key in item) {
-          console.log(key)
-          if (
-            item[key] &&
-            item[key].toString().toLowerCase().includes(ricercaBar)
-          ) {
-            return true;
+      let itemsToFilter = itemsFiltered;
+      const ricercaBar = document.getElementById("ricercaBar").value;
+      let result = [];
+      let propierties = [
+        "id",
+        "tsk",
+        "lir",
+        "nctr",
+        "nctn",
+        "ogtn",
+        "ogtp",
+        "localizzazione",
+        "autore",
+      ];
+
+      for (let i = 0; i < itemsToFilter.data.length; i++) {
+        for (let index = 0; index < propierties.length; index++) {
+          if (itemsToFilter.data[i][propierties[index]] == ricercaBar) {
+            result.push(itemsToFilter.data[i]);
           }
         }
-        return false;
-      });
-      console.log(filteredItems);
-      itemsFiltered.data = filteredItems;
+      }
+      itemsToFilter.data.length = 0;
+      itemsToFilter.data.push(result);
     }
 
     async function deleteItem(item) {
@@ -344,12 +357,12 @@ export default {
       const confirmed = confirm("Are you sure you want to delete this item?");
       if (confirmed) deleteItem(item);
     }
-    function onInfoClicked(item) {
-      router.push({
-        name: "infoItem",
-        params: { collection: collection.value, id: item.id },
-      });
-    }
+    // function onInfoClicked(item) {
+    //   router.push({
+    //     name: "infoItem",
+    //     params: { collection: collection.value, id: item.id },
+    //   });
+    // }
 
     return {
       items,
@@ -357,9 +370,10 @@ export default {
       createLink,
       onEditClicked,
       onDeleteClicked,
-      onInfoClicked,
+      // onInfoClicked,
       fetchData,
       filterTable,
+      infoQty,
     };
   },
 };

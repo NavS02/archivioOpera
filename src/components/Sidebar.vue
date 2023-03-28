@@ -18,6 +18,192 @@ export default {
 <template>
   <!-- ======= Sidebar ======= -->
   <aside v-if="authenticated" id="sidebar" class="sidebar">
+    <div class="accordion" id="accordionPanelsStayOpenExample">
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="panelsStayOpen-headingOne">
+          <button
+            class="accordion-button"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#collapseOne"
+            aria-expanded="true"
+            aria-controls="panelsStayOpen-collapseOne"
+          >
+            HOME
+          </button>
+        </h2>
+        <div
+          id="collapseOne"
+          class="accordion-collapse collapse show"
+          aria-labelledby="headingOne"
+          data-bs-parent="#accordionExample"
+        >
+          <div class="accordion-body">
+            <ul class="sidebar-nav" id="sidebar-nav">
+              <li class="nav-item">
+                <router-link
+                  :to="{ name: 'home' }"
+                  v-slot="{ isExactActive, href }"
+                  custom
+                >
+                  <a
+                    class="nav-link"
+                    :href="href"
+                    :class="isExactActive ? 'active' : ''"
+                    >Dashboard</a
+                  >
+                </router-link>
+              </li>
+              <li class="nav-item">
+                <router-link class="nav-link" :to="{ name: 'SearchItem' }"
+                  >Cerca</router-link
+                >
+              </li>
+              
+              <li class="nav-item">
+                <router-link class="nav-link" :to="{ name: 'createItem', params: { collection: 'opera' } }"
+                  >Nuova scheda</router-link
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="headingTwo">
+          <button
+            class="accordion-button collapsed"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#collapseTwo"
+            aria-expanded="false"
+            aria-controls="collapseTwo"
+          >
+            INDICI
+          </button>
+        </h2>
+        <div
+          id="collapseTwo"
+          class="accordion-collapse collapse"
+          aria-labelledby="headingTwo"
+          data-bs-parent="#accordionExample"
+        >
+          <div class="accordion-body">
+            <ul class="sidebar-nav" id="sidebar-nav">
+              <li class="nav-item">
+                <router-link
+                  class="nav-link"
+                  :to="{ name: 'listItems', params: { collection: 'opera' } }"
+                  >Opere</router-link
+                >
+              </li>
+              <li class="nav-item">
+                <router-link
+                  class="nav-link"
+                  :to="{
+                    name: 'listItems',
+                    params: { collection: 'cronologia' },
+                  }"
+                  >Cronologia</router-link
+                >
+              </li>
+              <li class="nav-item">
+                <router-link
+                  class="nav-link"
+                  :to="{
+                    name: 'listItems',
+                    params: { collection: 'localizzazione' },
+                  }"
+                  >Localizzazione</router-link
+                >
+              </li>
+              <li class="nav-item">
+                <router-link
+                  class="nav-link"
+                  :to="{ name: 'listItems', params: { collection: 'autore' } }"
+                  >Autore</router-link
+                >
+              </li>
+              <li class="nav-item">
+                <router-link
+                  class="nav-link"
+                  :to="{ name: 'listItems', params: { collection: 'ambito' } }"
+                  >Ambito</router-link
+                >
+              </li>
+              <li class="nav-item">
+                <router-link
+                  class="nav-link"
+                  :to="{
+                    name: 'listItems',
+                    params: { collection: 'committenza' },
+                  }"
+                  >Committenza</router-link
+                >
+              </li>
+              <li class="nav-item">
+                <router-link
+                  class="nav-link"
+                  :to="{
+                    name: 'listItems',
+                    params: { collection: 'restauro' },
+                  }"
+                  >Restauro</router-link
+                >
+              </li>
+              <li class="nav-item">
+                <router-link
+                  class="nav-link"
+                  :to="{
+                    name: 'listItems',
+                    params: { collection: 'iscrizione' },
+                  }"
+                  >Iscrizione</router-link
+                >
+              </li>
+              <li class="nav-item">
+                <router-link
+                  class="nav-link"
+                  :to="{ name: 'listItems', params: { collection: 'stemmi' } }"
+                  >Stemmi</router-link
+                >
+              </li>
+              <li class="nav-item">
+                <router-link
+                  class="nav-link"
+                  :to="{ name: 'listItems', params: { collection: 'fta' } }"
+                  >Fotografia</router-link
+                >
+              </li>
+              <li class="nav-item">
+                <router-link
+                  class="nav-link"
+                  :to="{ name: 'listItems', params: { collection: 'mostra' } }"
+                  >Mostra</router-link
+                >
+              </li>
+              <li class="nav-item">
+                <router-link
+                  class="nav-link"
+                  :to="{ name: 'listItems', params: { collection: 'fonte' } }"
+                  >Fonte</router-link
+                >
+              </li>
+              <li class="nav-item">
+                <router-link
+                  class="nav-link"
+                  :to="{ name: 'listItems', params: { collection: 'bib' } }"
+                  >Bibliografia</router-link
+                >
+              </li>
+
+              <!---<li class="nav-item"><router-link class="nav-link" :to="{name:'listItems',params:{collection:'autore'}}">Autori</router-link></li>
+          <li class="nav-item"><router-link class="nav-link" :to="{name:'notes'}">Notes</router-link></li>--->
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
     <!----<ul class="sidebar-nav" id="sidebar-nav">
     
           <li class="nav-item">
@@ -42,125 +228,8 @@ export default {
           </li> End opera Nav
     
         </ul>--->
-
-    <ul class="sidebar-nav" id="sidebar-nav">
-      <li class="nav-item">
-        <router-link
-          :to="{ name: 'home' }"
-          v-slot="{ isExactActive, href }"
-          custom
-        >
-          <a
-            class="nav-link"
-            :href="href"
-            :class="isExactActive ? 'active' : ''"
-            >Home</a
-          >
-        </router-link>
-      </li>
-      <li class="nav-item">
-        <router-link class="nav-link" :to="{ name: 'SearchItem' }"
-          >Cerca</router-link
-        >
-      </li>
-
-      <hr />
-
-      <li class="nav-item">
-        <router-link
-          class="nav-link"
-          :to="{ name: 'listItems', params: { collection: 'opera' } }"
-          >Opere</router-link
-        >
-      </li>
-      <li class="nav-item">
-        <router-link
-          class="nav-link"
-          :to="{ name: 'listItems', params: { collection: 'cronologia' } }"
-          >Cronologia</router-link
-        >
-      </li>
-      <li class="nav-item">
-        <router-link
-          class="nav-link"
-          :to="{ name: 'listItems', params: { collection: 'localizzazione' } }"
-          >Localizzazione</router-link
-        >
-      </li>
-      <li class="nav-item">
-        <router-link
-          class="nav-link"
-          :to="{ name: 'listItems', params: { collection: 'autore' } }"
-          >Autore</router-link
-        >
-      </li>
-      <li class="nav-item">
-        <router-link
-          class="nav-link"
-          :to="{ name: 'listItems', params: { collection: 'ambito' } }"
-          >Ambito</router-link
-        >
-      </li>
-      <li class="nav-item">
-        <router-link
-          class="nav-link"
-          :to="{ name: 'listItems', params: { collection: 'committenza' } }"
-          >Committenza</router-link
-        >
-      </li>
-      <li class="nav-item">
-        <router-link
-          class="nav-link"
-          :to="{ name: 'listItems', params: { collection: 'restauro' } }"
-          >Restauro</router-link
-        >
-      </li>
-      <li class="nav-item">
-        <router-link
-          class="nav-link"
-          :to="{ name: 'listItems', params: { collection: 'iscrizione' } }"
-          >Iscrizione</router-link
-        >
-      </li>
-      <li class="nav-item">
-        <router-link
-          class="nav-link"
-          :to="{ name: 'listItems', params: { collection: 'stemmi' } }"
-          >Stemmi</router-link
-        >
-      </li>
-      <li class="nav-item">
-        <router-link
-          class="nav-link"
-          :to="{ name: 'listItems', params: { collection: 'fta' } }"
-          >Fotografia</router-link
-        >
-      </li>
-      <li class="nav-item">
-        <router-link
-          class="nav-link"
-          :to="{ name: 'listItems', params: { collection: 'mostra' } }"
-          >mostra</router-link
-        >
-      </li>
-      <li class="nav-item">
-        <router-link
-          class="nav-link"
-          :to="{ name: 'listItems', params: { collection: 'fonte' } }"
-          >Fonte</router-link
-        >
-      </li>
-      <li class="nav-item">
-        <router-link
-          class="nav-link"
-          :to="{ name: 'listItems', params: { collection: 'bib' } }"
-          >Bibliografia</router-link
-        >
-      </li>
-
-      <!---<li class="nav-item"><router-link class="nav-link" :to="{name:'listItems',params:{collection:'autore'}}">Autori</router-link></li>
-          <li class="nav-item"><router-link class="nav-link" :to="{name:'notes'}">Notes</router-link></li>--->
-    </ul>
   </aside>
   <!-- End Sidebar-->
 </template>
+<style>
+</style>

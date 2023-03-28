@@ -528,6 +528,11 @@ vite@^4.0.0, vite@^4.1.0:
   optionalDependencies:
     fsevents "~2.3.2"
 
+vue-accordion@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.npmjs.org/vue-accordion/-/vue-accordion-1.0.0.tgz"
+  integrity sha512-Kwglhta6HUlBQB/1bQorsB1ZvB2W5ax5gkNxVyxGfk5QbXtuxmpdxcO5H8du1gol+f/vY6fbPYPVKE16w1GmTg==
+
 vue-demi@^0.13.11:
   version "0.13.11"
   resolved "https://registry.npmjs.org/vue-demi/-/vue-demi-0.13.11.tgz"
@@ -550,3 +555,8 @@ vue-router@^4.1.6:
     "@vue/runtime-dom" "3.2.47"
     "@vue/server-renderer" "3.2.47"
     "@vue/shared" "3.2.47"
+
+vuejs-paginate@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.npmjs.org/vuejs-paginate/-/vuejs-paginate-2.1.0.tgz"
+  integrity sha512-gnwyXlmCiDOu9MLWxN5UJ4PGijKGNOMpHG8ujsrynCzTJljn/rp7Jq0WiDGDAMi5/u0AHuYIHhced+tUW4jblA==

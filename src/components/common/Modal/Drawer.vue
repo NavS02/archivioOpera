@@ -1,6 +1,6 @@
 <template>
 
-    <div data-drawer v-if="isVisible" @click.self="onBackdropClicked">
+    <div data-drawer v-if="isVisible" @click.self="onBackdropClicked" >
         <div data-wrapper>
             <span data-close @click="onCloseClicked">
                 <font-awesome-icon icon="fa-solid fa-times" fixed-width/>
@@ -50,7 +50,7 @@
 <style scoped>
 [data-drawer] {
     --drawer-margin: 1.75rem;
-    --drawer-width: 70vw;
+    --drawer-width: 30vw;
     --drawer-color: rgb(0 0 0);
     --drawer-bg: rgb(255 255 255);
     --drawer-border-width: 1px;
