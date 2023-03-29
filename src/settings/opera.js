@@ -6,7 +6,7 @@ import restauro from "./restauro";
 import iscrizione from "./iscrizione";
 import stemmi from "./stemmi";
 import localizzazione from "./localizzazione";
-import Divider from '../models/Divider'
+import Divider from "../models/Divider";
 
 ///import roff from './roff'
 import cronologia from "./cronologia";
@@ -28,28 +28,29 @@ export default {
   collection: "opera",
   fields() {
     return [
+
+      new FormField({ label: "Codici", type: "biglabel", value: "" }),
+
       // new FormField({ name: 'id', label: 'id', type: 'text' }), waiting for select box
       new FormField({
         name: "tsk",
         label: "Tipo Scheda",
         type: "text",
         value: "OA",
-        column: "4",
+        column: "3",
       }),
       new RadioField({
         name: "lir",
-        column: "4",
+        column: "3",
         label: "Livello di ricerca",
         type: "radio",
         value: "I",
-        inline: true,
+        inline: false,
         choices: [
           { value: "C", label: "Catalogo" },
           { value: "P", label: "Precatalogo" },
           { value: "I", label: "Inventario" },
         ],
-        
-
       }),
 
       new FormField({
@@ -57,21 +58,21 @@ export default {
         label: "Num. Regione",
         type: "text",
         value: "09",
-        column: "4",
+        column: "3",
       }),
       new FormField({
         name: "nctn",
         label: "Num. Catalogo",
         type: "text",
         value: "",
-        column: "4",
+        column: "3",
       }),
       new FormField({
         name: "roz",
         label: "Rif. Orizzontale",
         type: "manyToMany",
         value: [],
-        column: "12",
+        column: "6",
 
         relation: "roz",
         foreign_key: "roz_id",
@@ -84,89 +85,76 @@ export default {
           return { roz: { _contains: text } };
         },
       }),
+      /* inventario */
+
+      new FormField({
+        name: "inventario",
+        label: "Inventario",
+        type: "manyToMany",
+        value: [],
+        column: "6",
+
+        relation: "inventario",
+        foreign_key: "inventario_id",
+        preview: (item) => {
+          return `${item?.id ?? "--"} - ${item?.invn}`;
+        },
+        fields: inventario.fields,
+        filter: (text) => {
+          if (text.trim() === "") return {};
+          return { inventario: { _contains: text } };
+        },
+      }),
       //File waiting for File upload
       //new FormField({ name: 'ogtd', label: 'Ogtd', type: 'text', value: '' }), waiting for manytoOne box
       // new FormField({ name: 'ogtt', label: 'Ogtt', type: 'text', value: '' }), waiting for manytoOne box
       // new FormField({ name: 'ogtv', label: 'Ogtv', type: 'text', value: '' }), waiting for manytoOne box
+
+      new Divider({ type: "divider" }),
+
+      new FormField({ label: "Oggetto", type: "biglabel", value: "" }),
 
       new FormField({
         name: "ogtn",
         label: "Oggetto",
         type: "text",
         value: "",
-        column: "4",
+        column: "3",
       }),
       new FormField({
         name: "ogtp",
         label: "posizione",
         type: "text",
         value: "",
-        column: "4",
+        column: "3",
       }),
       new FormField({
         name: "qntn",
         label: "Quantità",
         type: "number",
         value: "",
-        column: "4",
+        column: "3",
       }),
       new FormField({
         name: "qnts",
         label: "Qnts",
         type: "text",
         value: "",
-        column: "4",
+        column: "3",
       }),
       new FormField({
         name: "sgti",
         label: "Soggetto",
         type: "text",
         value: "",
-        column: "4",
-
+        column: "3",
       }),
       new FormField({
         name: "sgtt",
         label: "Titolo",
         type: "text",
         value: "",
-        column: "4",
-      }),
-      new FormField({
-        name: "ldcs",
-        label: "Collocazione",
-        type: "text",
-        value: "",
-        column: "4",
-
-      }),
-      new FormField({
-        name: "piano",
-        label: "Piano",
-        type: "text",
-        value: "",
-        column: "4",
-      }),
-      new FormField({
-        name: "sala",
-        label: "Sala",
-        type: "text",
-        value: "",
-        column: "4",
-      }),
-      new FormField({
-        name: "parete",
-        label: "Parete",
-        type: "text",
-        value: "",
-        column: "4",
-      }),
-      new FormField({
-        name: "specifiche",
-        label: "Specifiche",
-        type: "text",
-        value: "",
-        column: "4",
+        column: "3",
       }),
       new FormField({
         name: "deso",
@@ -174,22 +162,21 @@ export default {
         type: "textarea",
         value: "",
         column: "12",
+      }),
 
+      new FormField({
+        name: "dess",
+        label: "Descrizione soggetto",
+        type: "textarea",
+        value: "",
+        column: "6",
       }),
       new FormField({
         name: "desi",
         label: "Desi",
         type: "text",
         value: "",
-        column: "4",
-      }),
-      new FormField({
-        name: "dess",
-        label: "Descrizione soggetto",
-        type: "textarea",
-        value: "",
-        column: "4",
-
+        column: "6",
       }),
       new FormField({
         name: "nsc",
@@ -197,11 +184,290 @@ export default {
         type: "textarea",
         value: "",
         column: "12",
-
       }),
-      new Divider({ type: 'divider' }),
 
-      new FormField({ label: "DATI FISICI", type: "biglabel", value: "" }),
+      /* cronologia */
+
+      new FormField({
+        name: "cronologia",
+        label: "Cronologia",
+        type: "manyToMany",
+        value: [],
+        relation: "cronologia",
+        foreign_key: "cronologia_id",
+        preview: (item) => {
+          return `${item?.id ?? "--"} - ${item?.dtzg}`;
+        },
+        fields: cronologia.fields,
+        filter: (text) => {
+          if (text.trim() === "") return {};
+          return { cronologia: { _contains: text } };
+        },
+      }),
+      //Mtc
+      //
+      new FormField({
+        name: "mtc",
+        label: "Materia e Tecnica",
+        type: "manyToMany",
+        value: [],
+        relation: "mtc",
+        foreign_key: "mtc_id",
+        preview: (item) => {
+          return `${item?.id ?? "--"} - ${item?.mtc}`;
+        },
+        fields: mtc.fields,
+        filter: (text) => {
+          if (text.trim() === "") return {};
+          return { mtc: { _contains: text } };
+        },
+      }),
+      new FormField({
+        name: "oss",
+        label: "Oss",
+        type: "textarea",
+        defaultValue: null,
+        column: "12",
+      }),
+      new Divider({ type: "divider" }),
+
+      new FormField({ label: "Misure", type: "biglabel", value: "" }),
+
+      //new FormField({ name: 'misu', label: 'Misu', type: 'text', defaultValue: null, column: '6'  }),
+      new SelectField({
+        name: "misu",
+        label: "Unità di misura",
+        type: "select",
+        column: "3",
+        value: "",
+        options: [
+          { value: "", label: " " },
+          { value: "cm", label: "cm" },
+          { value: "ct", label: "ct" },
+          { value: "g", label: "g" },
+          { value: "hg", label: "hg" },
+          { value: "kg", label: "kg" },
+          { value: "l", label: "l" },
+          { value: "m", label: "m" },
+          { value: "mc", label: "mc" },
+          { value: "mm", label: "mm" },
+          { value: "mq", label: "mq" },
+          { value: "UNR", label: "Unità Non Rilevata" },
+        ],
+      }),
+      new FormField({
+        name: "misa",
+        label: "Misa",
+        type: "text",
+        defaultValue: null,
+        column: "3",
+      }),
+      new FormField({
+        name: "misl",
+        label: "Misl",
+        type: "text",
+        defaultValue: null,
+        column: "3",
+      }),
+      new FormField({
+        name: "misp",
+        label: "Misp",
+        type: "text",
+        defaultValue: null,
+        column: "3",
+      }),
+      new FormField({
+        name: "misd",
+        label: "Misd",
+        type: "text",
+        defaultValue: null,
+        column: "3",
+      }),
+      new FormField({
+        name: "misn",
+        label: "Misn",
+        type: "text",
+        defaultValue: null,
+        column: "3",
+      }),
+      new FormField({
+        name: "miss",
+        label: "Miss",
+        type: "text",
+        defaultValue: null,
+        column: "3",
+      }),
+      new FormField({
+        name: "misg",
+        label: "Misg",
+        type: "text",
+        defaultValue: null,
+        column: "3",
+      }),
+      new FormField({
+        name: "misv",
+        label: "Misv",
+        type: "text",
+        defaultValue: null,
+        column: "3",
+      }),
+      new SelectField({
+        name: "misr",
+        label: "Mancanza",
+        type: "select",
+        column: "3",
+        value: "",
+        options: [
+          { value: "", label: " " },
+          { value: "mnr", label: "mnr" },
+        ],
+      }),
+      new SelectField({
+        name: "mist",
+        label: "validità",
+        type: "select",
+        column: "3",
+        value: "",
+        options: [
+          { value: "", label: " " },
+          { value: "ca", label: "ca" },
+        ],
+      }),
+
+      // new CheckboxField({
+      //   name: "misr",
+      //   label: "mancanza",
+      //   type: "checkbox",
+      //   value: [],
+      //   inline: false,
+      //   column: "4",
+      //   options: [{ value: "mnr", label: "mnr" }],
+      // }),
+      // new CheckboxField({
+      //   name: "mist",
+      //   label: "validità",
+      //   type: "checkbox",
+      //   value: [],
+      //   inline: false,
+      //   column: "4",
+      //   options: [{ value: true, label: "ca" }],
+      // }),
+
+      //frm
+
+      new Divider({ type: "divider" }),
+
+      new FormField({
+        label: "Rapporto Opera finale",
+        type: "biglabel",
+        value: "",
+      }),
+
+      //roff
+      new FormField({
+        name: "rofo",
+        label: "Rofo",
+        type: "text",
+        defaultValue: null,
+        column: "3",
+      }),
+      new FormField({
+        name: "rofs",
+        label: "Rofs",
+        type: "text",
+        defaultValue: null,
+        column: "3",
+      }),
+      new FormField({
+        name: "rofa",
+        label: "Rofa",
+        type: "text",
+        defaultValue: null,
+        column: "3",
+      }),
+      new FormField({
+        name: "rofd",
+        label: "Rofd",
+        type: "text",
+        defaultValue: null,
+        column: "3",
+      }),
+      new FormField({
+        name: "rofc",
+        label: "Rofc",
+        type: "text",
+        defaultValue: null,
+        column: "3",
+      }),
+
+      new Divider({ type: "divider" }),
+
+      new FormField({ label: "Collocazione", type: "biglabel", value: "" }),
+
+      new FormField({
+        name: "ldcs",
+        label: "Collocazione",
+        type: "text",
+        value: "",
+        column: "12",
+      }),
+      new FormField({
+        name: "piano",
+        label: "Piano",
+        type: "text",
+        value: "",
+        column: "3",
+      }),
+      new FormField({
+        name: "sala",
+        label: "Sala",
+        type: "text",
+        value: "",
+        column: "3",
+      }),
+      new FormField({
+        name: "parete",
+        label: "Parete",
+        type: "text",
+        value: "",
+        column: "3",
+      }),
+      new FormField({
+        name: "specifiche",
+        label: "Specifiche",
+        type: "text",
+        value: "",
+        column: "3",
+      }),
+      new Divider({ type: "divider" }),
+
+      new FormField({
+        label: "Conservazione e Restauro",
+        type: "biglabel",
+        value: "",
+      }),
+      //stcc
+      new SelectField({
+        name: "stcc",
+        label: "Stato di Conservazione",
+        type: "select",
+        value: "",
+        column: "6",
+        options: [
+          { value: "", label: "" },
+          { value: "buono", label: "buono" },
+          { value: "discreto", label: "discreto" },
+          { value: "mediocre", label: "mediocre" },
+          { value: "cattivo", label: "cattivo" },
+        ],
+      }),
+      new FormField({
+        name: "stcs",
+        label: "Stcs",
+        type: "text",
+        defaultValue: null,
+        column: "6",
+      }),
 
       /* restauro */
 
@@ -220,6 +486,101 @@ export default {
           if (text.trim() === "") return {};
           return { restauro: { _contains: text } };
         },
+      }),
+      new Divider({ type: "divider" }),
+
+      new FormField({
+        label: "Condizione giuridica",
+        type: "biglabel",
+        value: "",
+      }),
+
+      //cdgg
+      new FormField({
+        name: "cdgs",
+        label: "Cdgs",
+        type: "text",
+        defaultValue: null,
+        column: "6",
+      }),
+      new FormField({
+        name: "cdgi",
+        label: "Indirizzo",
+        type: "text",
+        defaultValue: null,
+        column: "6",
+      }),
+
+      //acquisizione
+
+      new FormField({
+        name: "acqt",
+        label: "Tipo Acquisizione",
+        type: "manytoOne",
+        defaultValue: null,
+        column: "3",
+      }),
+      new FormField({
+        name: "acqn",
+        label: "Nome Acquisizione",
+        type: "text",
+        defaultValue: null,
+        column: "3",
+      }),
+      new FormField({
+        name: "acqd",
+        label: "Data Acquisizione",
+        type: "text",
+        defaultValue: null,
+        column: "3",
+      }),
+      new FormField({
+        name: "acql",
+        label: "Luogo Acquisizione",
+        type: "text",
+        defaultValue: null,
+        column: "3",
+      }),
+
+      //Compilazione
+      new Divider({ type: "divider" }),
+
+      new FormField({ label: "Compilazione", type: "biglabel", value: "" }),
+
+      new FormField({
+        name: "cmpd",
+        label: "Data",
+        type: "text",
+        defaultValue: null,
+        column: "4",
+      }),
+      new FormField({
+        name: "cmpn",
+        label: "Compilatore",
+        type: "text",
+        defaultValue: null,
+        column: "4",
+      }),
+      new FormField({
+        name: "fur",
+        label: "Funzionario",
+        type: "text",
+        defaultValue: null,
+        column: "4",
+      }),
+      new FormField({
+        name: "rvmd",
+        label: "Data revisione",
+        type: "text",
+        defaultValue: null,
+        column: "4",
+      }),
+      new FormField({
+        name: "rvmn",
+        label: "Nome revisione",
+        type: "text",
+        defaultValue: null,
+        column: "4",
       }),
 
       /* iscrizione */
@@ -259,8 +620,8 @@ export default {
           return { stemmi: { _contains: text } };
         },
       }),
-      new Divider({ type: 'divider' }),
-      
+      new Divider({ type: "divider" }),
+
       new FormField({ label: "DATI CULTURALI", type: "biglabel", value: "" }),
       /* localizzazione */
 
@@ -278,62 +639,6 @@ export default {
         filter: (text) => {
           if (text.trim() === "") return {};
           return { localizzazione: { _contains: text } };
-        },
-      }),
-
-      //roff
-      new FormField({
-        name: "rofo",
-        label: "Rofo",
-        type: "text",
-        defaultValue: null,
-        column: "4",
-      }),
-      new FormField({
-        name: "rofs",
-        label: "Rofs",
-        type: "text",
-        defaultValue: null,
-        column: "4",
-      }),
-      new FormField({
-        name: "rofa",
-        label: "Rofa",
-        type: "text",
-        defaultValue: null,
-        column: "4",
-      }),
-      new FormField({
-        name: "rofd",
-        label: "Rofd",
-        type: "text",
-        defaultValue: null,
-        column: "4",
-      }),
-      new FormField({
-        name: "rofc",
-        label: "Rofc",
-        type: "text",
-        defaultValue: null,
-        column: "4",
-      }),
-
-      /* cronologia */
-
-      new FormField({
-        name: "cronologia",
-        label: "Cronologia",
-        type: "manyToMany",
-        value: [],
-        relation: "cronologia",
-        foreign_key: "cronologia_id",
-        preview: (item) => {
-          return `${item?.id ?? "--"} - ${item?.dtzg}`;
-        },
-        fields: cronologia.fields,
-        filter: (text) => {
-          if (text.trim() === "") return {};
-          return { cronologia: { _contains: text } };
         },
       }),
 
@@ -393,28 +698,9 @@ export default {
           return { committenza: { _contains: text } };
         },
       }),
-      new Divider({ type: 'divider' }),
+      new Divider({ type: "divider" }),
 
       new FormField({ label: "DATI ALLEGATI", type: "biglabel", value: "" }),
-
-      /* inventario */
-
-      new FormField({
-        name: "inventario",
-        label: "Inventario",
-        type: "manyToMany",
-        value: [],
-        relation: "inventario",
-        foreign_key: "inventario_id",
-        preview: (item) => {
-          return `${item?.id ?? "--"} - ${item?.invn}`;
-        },
-        fields: inventario.fields,
-        filter: (text) => {
-          if (text.trim() === "") return {};
-          return { inventario: { _contains: text } };
-        },
-      }),
 
       /* fta */
 
@@ -472,189 +758,13 @@ export default {
           return { mostra: { _contains: text } };
         },
       }),
-
-      //acqt
-      new FormField({
-        name: "acqn",
-        label: "Acqn",
-        type: "text",
-        defaultValue: null,
-        column: "4",
-      }),
-      new FormField({
-        name: "acqd",
-        label: "Acqd",
-        type: "text",
-        defaultValue: null,
-        column: "4",
-      }),
-      new FormField({
-        name: "acql",
-        label: "Acql",
-        type: "text",
-        defaultValue: null,
-        column: "4",
-      }),
-      //cdgg
-      new FormField({
-        name: "cdgs",
-        label: "Cdgs",
-        type: "text",
-        defaultValue: null,
-        column: "4",
-      }),
-      new FormField({
-        name: "cdgi",
-        label: "Cdgi",
-        type: "text",
-        defaultValue: null,
-        column: "4",
-      }),
-      //stcc
-      new SelectField({
-        name: "stcc",
-        label: "Stato di Conservazione",
-        type: "select",
-        value: "",
-        options: [
-          { value: "", label: "" },
-          { value: "buono", label: "buono" },
-          { value: "discreto", label: "discreto" },
-          { value: "mediocre", label: "mediocre" },
-          { value: "cattivo", label: "cattivo" },
-        ],
-      }),
-      new FormField({
-        name: "stcs",
-        label: "Stcs",
-        type: "text",
-        defaultValue: null,
-        column: "4",
-      }),
-      //Mtc
-      //
-      new FormField({
-        name: "mtc",
-        label: "Materia e Tecnica",
-        type: "manyToMany",
-        value: [],
-        relation: "mtc",
-        foreign_key: "mtc_id",
-        preview: (item) => {
-          return `${item?.id ?? "--"} - ${item?.mtc}`;
-        },
-        fields: mtc.fields,
-        filter: (text) => {
-          if (text.trim() === "") return {};
-          return { mtc: { _contains: text } };
-        },
-      }),
-      new FormField({
-        name: "misa",
-        label: "Misa",
-        type: "text",
-        defaultValue: null,
-        column: "4",
-      }),
-      //new FormField({ name: 'misu', label: 'Misu', type: 'text', defaultValue: null, column: '6'  }),
-      new SelectField({
-        name: "misu",
-        label: "Unità di misura",
-        type: "select",
-        column: "4",
-        value: "",
-        options: [
-          { value: "", label: " " },
-          { value: "cm", label: "cm" },
-          { value: "ct", label: "ct" },
-          { value: "g", label: "g" },
-          { value: "hg", label: "hg" },
-          { value: "kg", label: "kg" },
-          { value: "l", label: "l" },
-          { value: "m", label: "m" },
-          { value: "mc", label: "mc" },
-          { value: "mm", label: "mm" },
-          { value: "mq", label: "mq" },
-          { value: "UNR", label: "Unità Non Rilevata" },
-        ],
-      }),
-      new FormField({
-        name: "misl",
-        label: "Misl",
-        type: "text",
-        defaultValue: null,
-        column: "4",
-      }),
-      new FormField({
-        name: "misp",
-        label: "Misp",
-        type: "text",
-        defaultValue: null,
-        column: "4",
-      }),
-      new FormField({
-        name: "misd",
-        label: "Misd",
-        type: "text",
-        defaultValue: null,
-        column: "4",
-      }),
-      new FormField({
-        name: "misn",
-        label: "Misn",
-        type: "text",
-        defaultValue: null,
-        column: "4",
-      }),
-      new FormField({
-        name: "miss",
-        label: "Miss",
-        type: "text",
-        defaultValue: null,
-        column: "4",
-      }),
-      new FormField({
-        name: "misg",
-        label: "Misg",
-        type: "text",
-        defaultValue: null,
-        column: "4",
-      }),
-      new FormField({
-        name: "misv",
-        label: "Misv",
-        type: "text",
-        defaultValue: null,
-        column: "4",
-      }),
-
-      new CheckboxField({
-        name: "misr",
-        label: "mancanza",
-        type: "checkbox",
-        value: [],
-        inline: false,
-        column: "4",
-        options: [{ value: "mnr", label: "mnr" }],
-      }),
-      new CheckboxField({
-        name: "mist",
-        label: "validità",
-        type: "checkbox",
-        value: [],
-        inline: false,
-        column: "4",
-        options: [{ value: true, label: "ca" }],
-      }),
-
-      //frm
       new RadioField({
         name: "adsp",
         label: "Profilo di accesso",
         type: "radio",
         value: "I",
         inline: false,
-        column: "4",
+        column: "3",
         choices: [
           { value: "1", label: "basso" },
           { value: "2", label: "medio" },
@@ -671,48 +781,7 @@ export default {
       //         { value: 'bene non adeguatamente sorvegliabile', label: 'bene non adeguatamente sorvegliabile'},
       //     ]
       // }),
-      new FormField({
-        name: "cmpd",
-        label: "Cmpd",
-        type: "text",
-        defaultValue: null,
-        column: "4",
-      }),
-      new FormField({
-        name: "cmpd",
-        label: "Cmpn",
-        type: "text",
-        defaultValue: null,
-        column: "4",
-      }),
-      new FormField({
-        name: "fur",
-        label: "Fur",
-        type: "text",
-        defaultValue: null,
-        column: "4",
-      }),
-      new FormField({
-        name: "rvmd",
-        label: "Rvmd",
-        type: "text",
-        defaultValue: null,
-        column: "4",
-      }),
-      new FormField({
-        name: "rvmn",
-        label: "Rvmn",
-        type: "text",
-        defaultValue: null,
-        column: "4",
-      }),
-      new FormField({
-        name: "oss",
-        label: "Oss",
-        type: "textarea",
-        defaultValue: null,
-        column: "4",
-      }),
+
       /*new FormField({
                         name: 'bib',
                         label: 'Bib', type: 'manyToMany', value: [],

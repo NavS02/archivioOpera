@@ -42,13 +42,13 @@ export default {
       <img
         src="/logoSiena.png"
         alt=""
-        style="width: 200px; height: 50px"
+        style="height: 50px"
       />
       <i class="bi bi-list toggle-sidebar-btn" @click="toggleClass"></i>
     </div>
 
     <div class="operaTitle text-center">
-      <span>Opera della Metropolitana </span>
+      <span>Archivio Opere d'arte </span>
     </div>
 
     <nav class="header-nav ms-auto">

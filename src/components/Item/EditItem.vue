@@ -1,32 +1,29 @@
 <template>
   <main id="main" class="main">
-    <div class="card">
-      <div class="card-body">
-        <h5 class="card-title">
-          Edit item ID #{{ id }} - OGTD #{{ ogtd }} - SGTI #{{ sgti }}
-        </h5>
-
-        <Form :fields="fields">
-          <template v-slot:footer="{ data }">
-            <div class="buttons">
-              <button
-                class="btn btn-sm btn-secondary"
-                @click="onCancelClicked()"
-              >
-                <font-awesome-icon icon="fa-solid fa-xmark" fixed-width />
-                <span class="ms-1">Cancel</span>
-              </button>
-              <button
-                class="btn btn-sm btn-primary"
-                @click="onSaveClicked(data)"
-              >
-                <font-awesome-icon icon="fa-solid fa-floppy-disk" fixed-width />
-                <span class="ms-1">Save</span>
-              </button>
-            </div>
-          </template>
-        </Form>
+    <div v-for="(field, index) in fields" :key="index">
+      <div v-if="field.type == 'divider'">
+        <div class="card">
+          <div class="card-body" >
+            <Form :fields="fields.slice(prevIndex + 1, index)" >
+              <template v-slot:footer="{ data }"> </template>
+            </Form>
+          </div>
+        </div>
+        <div v-if="index !== fields.length - 1">
+          <br />
+        </div>
       </div>
+    </div>
+
+    <div class="buttons">
+      <button class="btn btn-sm btn-secondary" @click="onCancelClicked()">
+        <font-awesome-icon icon="fa-solid fa-xmark" fixed-width />
+        <span class="ms-1">Cancel</span>
+      </button>
+      <button class="btn btn-sm btn-primary" @click="onSaveClicked(data)">
+        <font-awesome-icon icon="fa-solid fa-floppy-disk" fixed-width />
+        <span class="ms-1">Save</span>
+      </button>
     </div>
   </main>
 </template>
@@ -51,6 +48,7 @@ export default {
     const { id } = toRefs(props);
     let ogtd = ref("");
     let sgti = ref("");
+    let prevIndex = ref(-1);
 
     // watch the route and update data based on the collection param
     watch(
@@ -116,38 +114,37 @@ export default {
           .updateOne(id.value, data);
         // console.log(response)
 
-const alertElement = document.createElement("div");
-alertElement.classList.add("alert", "alert-success", "my-3");
-alertElement.innerText = "Item #"+id.value +" updated!";
+        const alertElement = document.createElement("div");
+        alertElement.classList.add("alert", "alert-success", "my-3");
+        alertElement.innerText = "Item #" + id.value + " updated!";
 
-alertElement.style.position = "fixed";
-alertElement.style.top = "30px";
-alertElement.style.right = "10px";
-alertElement.style.zIndex = "9999";
+        alertElement.style.position = "fixed";
+        alertElement.style.top = "30px";
+        alertElement.style.right = "10px";
+        alertElement.style.zIndex = "9999";
 
-document.body.appendChild(alertElement);
-setTimeout(() => {
-  alertElement.remove();
-}, 4000);
-
+        document.body.appendChild(alertElement);
+        setTimeout(() => {
+          alertElement.remove();
+        }, 4000);
 
         goToList();
       } catch (error) {
         console.error(error);
         // alert(error);
         const alertElement = document.createElement("div");
-alertElement.classList.add("alert", "alert-danger", "my-3");
-alertElement.innerText = "ERROR:"+error;
+        alertElement.classList.add("alert", "alert-danger", "my-3");
+        alertElement.innerText = "ERROR:" + error;
 
-alertElement.style.position = "fixed";
-alertElement.style.top = "10px";
-alertElement.style.right = "10px";
-alertElement.style.zIndex = "9999";
+        alertElement.style.position = "fixed";
+        alertElement.style.top = "10px";
+        alertElement.style.right = "10px";
+        alertElement.style.zIndex = "9999";
 
-document.body.appendChild(alertElement);
-setTimeout(() => {
-  alertElement.remove();
-}, 4000);
+        document.body.appendChild(alertElement);
+        setTimeout(() => {
+          alertElement.remove();
+        }, 4000);
       }
     }
 
@@ -158,6 +155,7 @@ setTimeout(() => {
       onSaveClicked,
       ogtd,
       sgti,
+      prevIndex,
     };
   },
   props: {
