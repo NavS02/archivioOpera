@@ -29,6 +29,8 @@ export default {
   fields() {
     return [
 
+      new Divider({ type: "divider" }),
+
       new FormField({ label: "Codici", type: "biglabel", value: "" }),
 
       // new FormField({ name: 'id', label: 'id', type: 'text' }), waiting for select box
@@ -620,6 +622,7 @@ export default {
           return { stemmi: { _contains: text } };
         },
       }),
+
       new Divider({ type: "divider" }),
 
       new FormField({ label: "DATI CULTURALI", type: "biglabel", value: "" }),
@@ -771,6 +774,10 @@ export default {
           { value: "3", label: "alto" },
         ],
       }),
+  
+      new Divider({ type: "divider" }),
+
+
       // new RadioField({ name: 'adsm', label: 'Motivazione', type: 'radio', value: 'I',
       //      inline: false,
       //      choices: [

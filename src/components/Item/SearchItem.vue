@@ -59,11 +59,17 @@
         id="resultMTC"
       />
       <br />
-
-      <button type="button" class="btn btn-primary" @click="fetchData()">
+      <button
+        type="button"
+        class="btn btn-outline-primary"
+        @click="fetchData()"
+      >
         Cerca
       </button>
-
+      &nbsp
+      <button type="button" class="btn btn-outline-danger" @click="clearData()">
+        Pulire
+      </button>
       <hr />
       Mostra:
       <input
@@ -74,6 +80,8 @@
         id="limit"
         @input="infoQty()"
       />
+      &nbsp
+      {{ totalResult }} Risultati...
       <!-- <div style="float: right">
         Ricerca:
         <input
@@ -84,7 +92,6 @@
           v-on:keyup="filterTable()"
         />
       </div> -->
-      <br />
       <div class="form-check" style="float: right">
         <input
           class="form-check-input"
@@ -95,12 +102,13 @@
         />
         <label class="form-check-label" for="flexRadioDefault1"> Llista </label>
       </div>
-      <div class="form-check" style="float: right;margin-right:10px">
+      <div class="form-check" style="float: right; margin-right: 10px">
         <input
           class="form-check-input"
           type="radio"
           name="flexRadioDisabled"
-          id="flexRadioDefault2"  disabled
+          id="flexRadioDefault2"
+          disabled
         />
         <label class="form-check-label" for="flexRadioDefault2"> Carta </label>
       </div>
@@ -146,6 +154,22 @@
             </Table>
           </div>
         </div>
+        <nav aria-label="...">
+          <ul
+            class="pagination"
+            style="display: flex; flex-wrap: wrap; justify-content: center"
+          >
+            <li
+              v-for="index in totalPages"
+              :key="index"
+              class="page-item"
+              @click="skipPage(index)"
+              :id="'tablePage-' + index"
+            >
+              <a class="page-link">{{ index }}</a>
+            </li>
+          </ul>
+        </nav>
       </div>
     </div>
   </main>
@@ -168,6 +192,10 @@ export default {
     const items = ref([]);
     const fields = ref([]);
     var itemsFiltered = [];
+    var totalResult = ref(0);
+    var totalPages = ref();
+    let currentPage = null;
+
     // watch the route and update data based on the collection param
     watch(
       route,
@@ -188,10 +216,32 @@ export default {
       params: { collection: collection.value },
     }));
     function infoQty() {
-      let resultLimit = document.getElementById("limit").value;
-      const { data = [] } = itemsFiltered;
-      items.value = data.slice(0, resultLimit);
+      try {
+        let resultLimit = document.getElementById("limit").value;
+
+        const { data = [] } = itemsFiltered;
+        items.value = data.slice(0, resultLimit);
+
+        totalResult.value = itemsFiltered.data.length;
+        totalPages.value = Math.ceil(totalResult.value / resultLimit);
+      } catch (error) {}
     }
+
+    // CHANGE PAGE
+    function skipPage(page) {
+      let resultLimit = document.getElementById("limit").value;
+      if (currentPage != null) {
+        currentPage.classList.remove("active");
+        currentPage = document.getElementById("tablePage-" + page);
+        currentPage.classList.add("active");
+      } else {
+        currentPage = document.getElementById("tablePage-" + page);
+        currentPage.classList.add("active");
+      }
+      const { data = [] } = itemsFiltered;
+      items.value = data.slice((page - 1) * resultLimit, page * resultLimit);
+    }
+
     async function fetchData() {
       let resultLimit = document.getElementById("limit").value;
       let resultID = document.getElementById("resultID").value;
@@ -219,18 +269,28 @@ export default {
             },
             limit: -1,
           });
-
-          const ids = privateData.data.map((item) => item.id);
-          const opereAutore = await directus.items("opera_autore").readByQuery({
-            filter: {
-              autore_id: { _in: ids },
-            },
-            limit: -1,
-          });
-          const operaIds = opereAutore.data.map(({ opera_id }) => opera_id);
-          query["filter"]["id"] = {
-            _in: operaIds,
-          };
+          console.log(privateData)
+          if (privateData.data.length > 1) {
+            const ids = privateData.data.map((item) => item.id);
+            const opereAutore = await directus
+              .items("opera_autore")
+              .readByQuery({
+                filter: {
+                  autore_id: { _in: ids },
+                },
+                limit: -1,
+              });
+              console.log(opereAutore)
+            const operaIds = opereAutore.data.map(({ opera_id }) => opera_id);
+  console.log(operaIds)
+            query["filter"] = {
+              id:{_in: operaIds},
+            };
+          } else {
+            query["filter"] = {
+              id:{_in: null},
+            };
+          }
         }
 
         if (resultSGTI !== "") {
@@ -248,10 +308,16 @@ export default {
             },
             limit: -1,
           });
-          const ogtdId = privateData.data.map(({ id }) => id);
-          query["filter"]["ogtd"] = {
-            _in: ogtdId,
-          };
+          if (privateData.data.length > 1) {
+            const ogtdId = privateData.data.map(({ id }) => id);
+             query["filter"] = {
+              ogtd:{_in: ogtdId},
+            };
+          } else {
+             query["filter"] = {
+              ogtd:{_in: null},
+            };
+          }
         }
         if (resultInv !== "") {
           const privateData = await directus.items("inventario").readByQuery({
@@ -298,10 +364,10 @@ export default {
             _in: idOpereMTC,
           };
         }
-
         const response = await directus
           .items(collection.value)
           .readByQuery(query);
+          console.log(query)
         itemsFiltered = response;
         const { data = [] } = response;
         if (data.length < 1) {
@@ -312,6 +378,7 @@ export default {
       } catch (error) {
         items.value = null;
       }
+      console.log(items.value)
       infoQty();
     }
 
@@ -341,6 +408,19 @@ export default {
       itemsToFilter.data.length = 0;
       itemsToFilter.data.push(result);
     }
+    function clearData() {
+      document.getElementById("resultID").value = null;
+      document.getElementById("resultAutore").value = null;
+      document.getElementById("resultSGTI").value = null;
+      document.getElementById("resultSGTT").value = null;
+      document.getElementById("resultOGTD").value = null;
+      document.getElementById("resultInv").value = null;
+      document.getElementById("resultMTC").value = null;
+      totalResult.value = 0;
+
+      // CLEAR TABLE
+      items.value = null;
+    }
 
     async function deleteItem(item) {
       const { id } = item;
@@ -368,15 +448,28 @@ export default {
       items,
       fields,
       createLink,
+      totalResult,
+      totalPages,
       onEditClicked,
       onDeleteClicked,
       // onInfoClicked,
       fetchData,
       filterTable,
       infoQty,
+      clearData,
+      skipPage,
     };
   },
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.pagination-container {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 50px;
+  overflow: auto;
+}
+</style>

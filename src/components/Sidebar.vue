@@ -39,30 +39,25 @@ export default {
           data-bs-parent="#accordionExample"
         >
           <div class="accordion-body">
-            <ul class="sidebar-nav" id="sidebar-nav">
-              <li class="nav-item">
+            <ul class="list-group">
+              <li class="list-group-item">
+                <router-link class="nav-link" :to="{ name: 'home' }">
+                  <i class="bi bi-house text-primary"></i>
+                  Dashboard</router-link
+                >
+              </li>
+              <li class="list-group-item">
+                <router-link class="nav-link" :to="{ name: 'SearchItem' }">
+                  <i class="bi bi-search text-warning"></i> Cerca</router-link
+                >
+              </li>
+              <li class="list-group-item">
                 <router-link
-                  :to="{ name: 'home' }"
-                  v-slot="{ isExactActive, href }"
-                  custom
+                  class="nav-link"
+                  :to="{ name: 'createItem', params: { collection: 'opera' } }"
                 >
-                  <a
-                    class="nav-link"
-                    :href="href"
-                    :class="isExactActive ? 'active' : ''"
-                    >Dashboard</a
-                  >
-                </router-link>
-              </li>
-              <li class="nav-item">
-                <router-link class="nav-link" :to="{ name: 'SearchItem' }"
-                  >Cerca</router-link
-                >
-              </li>
-              
-              <li class="nav-item">
-                <router-link class="nav-link" :to="{ name: 'createItem', params: { collection: 'opera' } }"
-                  >Nuova scheda</router-link
+                  <i class="bi bi-file-earmark-plus text-info"></i> Nuova
+                  scheda</router-link
                 >
               </li>
             </ul>
@@ -89,15 +84,15 @@ export default {
           data-bs-parent="#accordionExample"
         >
           <div class="accordion-body">
-            <ul class="sidebar-nav" id="sidebar-nav">
-              <li class="nav-item">
+            <ul class="list-group" id="sidebar-nav">
+              <li class="list-group-item">
                 <router-link
                   class="nav-link"
                   :to="{ name: 'listItems', params: { collection: 'opera' } }"
                   >Opere</router-link
                 >
               </li>
-              <li class="nav-item">
+              <li class="list-group-item">
                 <router-link
                   class="nav-link"
                   :to="{
@@ -107,7 +102,7 @@ export default {
                   >Cronologia</router-link
                 >
               </li>
-              <li class="nav-item">
+              <li class="list-group-item">
                 <router-link
                   class="nav-link"
                   :to="{
@@ -117,21 +112,21 @@ export default {
                   >Localizzazione</router-link
                 >
               </li>
-              <li class="nav-item">
+              <li class="list-group-item">
                 <router-link
                   class="nav-link"
                   :to="{ name: 'listItems', params: { collection: 'autore' } }"
                   >Autore</router-link
                 >
               </li>
-              <li class="nav-item">
+              <li class="list-group-item">
                 <router-link
                   class="nav-link"
                   :to="{ name: 'listItems', params: { collection: 'ambito' } }"
                   >Ambito</router-link
                 >
               </li>
-              <li class="nav-item">
+              <li class="list-group-item">
                 <router-link
                   class="nav-link"
                   :to="{
@@ -141,7 +136,7 @@ export default {
                   >Committenza</router-link
                 >
               </li>
-              <li class="nav-item">
+              <li class="list-group-item">
                 <router-link
                   class="nav-link"
                   :to="{
@@ -151,7 +146,7 @@ export default {
                   >Restauro</router-link
                 >
               </li>
-              <li class="nav-item">
+              <li class="list-group-item">
                 <router-link
                   class="nav-link"
                   :to="{
@@ -161,35 +156,35 @@ export default {
                   >Iscrizione</router-link
                 >
               </li>
-              <li class="nav-item">
+              <li class="list-group-item">
                 <router-link
                   class="nav-link"
                   :to="{ name: 'listItems', params: { collection: 'stemmi' } }"
                   >Stemmi</router-link
                 >
               </li>
-              <li class="nav-item">
+              <li class="list-group-item">
                 <router-link
                   class="nav-link"
                   :to="{ name: 'listItems', params: { collection: 'fta' } }"
                   >Fotografia</router-link
                 >
               </li>
-              <li class="nav-item">
+              <li class="list-group-item">
                 <router-link
                   class="nav-link"
                   :to="{ name: 'listItems', params: { collection: 'mostra' } }"
                   >Mostra</router-link
                 >
               </li>
-              <li class="nav-item">
+              <li class="list-group-item">
                 <router-link
                   class="nav-link"
                   :to="{ name: 'listItems', params: { collection: 'fonte' } }"
                   >Fonte</router-link
                 >
               </li>
-              <li class="nav-item">
+              <li class="list-group-item">
                 <router-link
                   class="nav-link"
                   :to="{ name: 'listItems', params: { collection: 'bib' } }"
@@ -231,5 +226,4 @@ export default {
   </aside>
   <!-- End Sidebar-->
 </template>
-<style>
-</style>
+<style></style>

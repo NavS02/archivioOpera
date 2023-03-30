@@ -124,5 +124,8 @@ export default {
 .operaTitle {
   margin: 34%;
   font-size: 25px;
+  width:100%
+  
 }
+
 </style>
