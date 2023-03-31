@@ -29,7 +29,6 @@ export default {
   fields() {
     return [
 
-      new Divider({ type: "divider" }),
 
       new FormField({ label: "Codici", type: "biglabel", value: "" }),
 
@@ -71,7 +70,7 @@ export default {
       }),
       new FormField({
         name: "roz",
-        label: "Rif. Orizzontale",
+        label: "Riferimento Orizzontale",
         type: "manyToMany",
         value: [],
         column: "6",
@@ -91,7 +90,7 @@ export default {
 
       new FormField({
         name: "inventario",
-        label: "Inventario",
+        label: "Numero Inventario",
         type: "manyToMany",
         value: [],
         column: "6",
@@ -117,29 +116,50 @@ export default {
       new FormField({ label: "Oggetto", type: "biglabel", value: "" }),
 
       new FormField({
+        name: "ogtd",
+        label: "Definizione",
+        type: "manytoOne",
+        defaultValue: null,
+        column: "3",
+      }),
+      new FormField({
+        name: "ogtt",
+        label: "Tipologia",
+        type: "manytoOne",
+        defaultValue: null,
+        column: "3",
+      }),
+      new FormField({
+        name: "ogtv",
+        label: "Identificazione",
+        type: "manytoOne",
+        defaultValue: null,
+        column: "3",
+      }),
+      new FormField({
         name: "ogtn",
-        label: "Oggetto",
+        label: "Denominazione/ dedicazione",
         type: "text",
         value: "",
         column: "3",
       }),
       new FormField({
         name: "ogtp",
-        label: "posizione",
+        label: "Posizione",
         type: "text",
         value: "",
         column: "3",
       }),
       new FormField({
         name: "qntn",
-        label: "Quantità",
+        label: "Quantità Numero",
         type: "number",
         value: "",
         column: "3",
       }),
       new FormField({
         name: "qnts",
-        label: "Qnts",
+        label: "Quantità non rilevata ",
         type: "text",
         value: "",
         column: "3",
@@ -160,7 +180,7 @@ export default {
       }),
       new FormField({
         name: "deso",
-        label: "Descrizione oggetto",
+        label: "Indicazioni sull'oggetto",
         type: "textarea",
         value: "",
         column: "12",
@@ -168,14 +188,14 @@ export default {
 
       new FormField({
         name: "dess",
-        label: "Descrizione soggetto",
+        label: "Indicazioni sul soggetto",
         type: "textarea",
         value: "",
         column: "6",
       }),
       new FormField({
         name: "desi",
-        label: "Desi",
+        label: "Codifica Iconclass",
         type: "text",
         value: "",
         column: "6",
@@ -198,7 +218,7 @@ export default {
         relation: "cronologia",
         foreign_key: "cronologia_id",
         preview: (item) => {
-          return `${item?.id ?? "--"} - ${item?.dtzg}`;
+          return `${item?.dtzg}, ${item?.dtsi}, ${item?.dtsf} (id: ${item?.id ?? "--"})`;
         },
         fields: cronologia.fields,
         filter: (text) => {
@@ -216,7 +236,7 @@ export default {
         relation: "mtc",
         foreign_key: "mtc_id",
         preview: (item) => {
-          return `${item?.id ?? "--"} - ${item?.mtc}`;
+          return `${item?.mtc}  (id: ${item?.id ?? "--"})`;
         },
         fields: mtc.fields,
         filter: (text) => {
@@ -226,7 +246,7 @@ export default {
       }),
       new FormField({
         name: "oss",
-        label: "Oss",
+        label: "Osservazioni",
         type: "textarea",
         defaultValue: null,
         column: "12",
@@ -259,59 +279,59 @@ export default {
       }),
       new FormField({
         name: "misa",
-        label: "Misa",
+        label: "Altezza",
         type: "text",
         defaultValue: null,
         column: "3",
       }),
       new FormField({
         name: "misl",
-        label: "Misl",
+        label: "Larghezza",
         type: "text",
         defaultValue: null,
         column: "3",
       }),
       new FormField({
         name: "misp",
-        label: "Misp",
+        label: "Profondità",
         type: "text",
         defaultValue: null,
         column: "3",
       }),
       new FormField({
         name: "misd",
-        label: "Misd",
+        label: "Diametro",
         type: "text",
         defaultValue: null,
         column: "3",
       }),
       new FormField({
         name: "misn",
-        label: "Misn",
+        label: "Lunghezza",
         type: "text",
         defaultValue: null,
         column: "3",
       }),
       new FormField({
         name: "miss",
-        label: "Miss",
+        label: "Spessore",
         type: "text",
         defaultValue: null,
         column: "3",
       }),
       new FormField({
         name: "misg",
-        label: "Misg",
+        label: "Peso",
         type: "text",
         defaultValue: null,
         column: "3",
       }),
       new FormField({
         name: "misv",
-        label: "Misv",
+        label: "Varie",
         type: "text",
         defaultValue: null,
-        column: "3",
+        column: "12",
       }),
       new SelectField({
         name: "misr",
@@ -357,6 +377,13 @@ export default {
 
       //frm
 
+      new FormField({
+        name: "frm",
+        label: "Formato",
+        type: "manytoOne",
+        defaultValue: null,
+        column: "6",
+      }),
       new Divider({ type: "divider" }),
 
       new FormField({
@@ -367,39 +394,46 @@ export default {
 
       //roff
       new FormField({
+        name: "roff",
+        label: "Stadio opera",
+        type: "manytoOne",
+        defaultValue: null,
+        column: "4",
+      }),
+      new FormField({
         name: "rofo",
-        label: "Rofo",
+        label: "Opera finale/originale",
         type: "text",
         defaultValue: null,
-        column: "3",
+        column: "4",
       }),
       new FormField({
         name: "rofs",
-        label: "Rofs",
+        label: "Soggetto opera finale/originale",
         type: "text",
         defaultValue: null,
-        column: "3",
+        column: "4",
       }),
       new FormField({
         name: "rofa",
-        label: "Rofa",
+        label: "Autore opera finale/originale ",
         type: "text",
         defaultValue: null,
-        column: "3",
+        column: "4",
       }),
       new FormField({
         name: "rofd",
-        label: "Rofd",
+        label: "Datazione opera finale/originale",
         type: "text",
         defaultValue: null,
-        column: "3",
+        column: "4",
       }),
       new FormField({
         name: "rofc",
-        label: "Rofc",
+        label: "Collocazione opera finale/originale",
         type: "text",
         defaultValue: null,
-        column: "3",
+        column: "4",
       }),
 
       new Divider({ type: "divider" }),
@@ -408,7 +442,7 @@ export default {
 
       new FormField({
         name: "ldcs",
-        label: "Collocazione",
+        label: "Collocazione Specifica",
         type: "text",
         value: "",
         column: "12",
@@ -465,7 +499,7 @@ export default {
       }),
       new FormField({
         name: "stcs",
-        label: "Stcs",
+        label: "Indicazioni specifiche ",
         type: "text",
         defaultValue: null,
         column: "6",
@@ -499,8 +533,15 @@ export default {
 
       //cdgg
       new FormField({
+        name: "cdgg",
+        label: "Indicazione generica",
+        type: "manytoOne",
+        defaultValue: null,
+        column: "6",
+      }),
+      new FormField({
         name: "cdgs",
-        label: "Cdgs",
+        label: "Indicazione specifica",
         type: "text",
         defaultValue: null,
         column: "6",
@@ -510,7 +551,7 @@ export default {
         label: "Indirizzo",
         type: "text",
         defaultValue: null,
-        column: "6",
+        column: "12",
       }),
 
       //acquisizione
@@ -520,28 +561,28 @@ export default {
         label: "Tipo Acquisizione",
         type: "manytoOne",
         defaultValue: null,
-        column: "3",
+        column: "6",
       }),
       new FormField({
         name: "acqn",
-        label: "Nome Acquisizione",
+        label: "Nome",
         type: "text",
         defaultValue: null,
-        column: "3",
+        column: "6",
       }),
       new FormField({
         name: "acqd",
         label: "Data Acquisizione",
         type: "text",
         defaultValue: null,
-        column: "3",
+        column: "6",
       }),
       new FormField({
         name: "acql",
         label: "Luogo Acquisizione",
         type: "text",
         defaultValue: null,
-        column: "3",
+        column: "6",
       }),
 
       //Compilazione
@@ -585,6 +626,10 @@ export default {
         column: "4",
       }),
 
+           //Compilazione
+           new Divider({ type: "divider" }),
+
+           new FormField({ label: "Dati Fisici", type: "biglabel", value: "" }),
       /* iscrizione */
 
       new FormField({
@@ -761,19 +806,19 @@ export default {
           return { mostra: { _contains: text } };
         },
       }),
-      new RadioField({
-        name: "adsp",
-        label: "Profilo di accesso",
-        type: "radio",
-        value: "I",
-        inline: false,
-        column: "3",
-        choices: [
-          { value: "1", label: "basso" },
-          { value: "2", label: "medio" },
-          { value: "3", label: "alto" },
-        ],
-      }),
+      // new RadioField({
+      //   name: "adsp",
+      //   label: "Profilo di accesso",
+      //   type: "radio",
+      //   value: "I",
+      //   inline: false,
+      //   column: "3",
+      //   choices: [
+      //     { value: "1", label: "basso" },
+      //     { value: "2", label: "medio" },
+      //     { value: "3", label: "alto" },
+      //   ],
+      // }),
   
       new Divider({ type: "divider" }),
 
@@ -819,7 +864,7 @@ export default {
       { key: "ogtn", label: "OGTN", sortable: true },
       { key: "ogtp", label: "OGTP", sortable: true },
       { key: "lc", label: "Localizzazione", sortable: false },
-      { key: "autore", label: "Autore", sortable: false },
+      // { key: "autore", label: "Autore", sortable: false },
       // {key:'ambito',label:'Ambito',sortable: false},
       { key: "actions", label: "Actions", sortable: false },
     ];

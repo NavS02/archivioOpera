@@ -2,31 +2,82 @@
   <main id="main" class="main">
     <div class="card">
       <div class="card-body">
-        <h5 class="card-title">
-          <div style="text-align: right">
-            <button
-              class="btn btn-outline-success"
-              @click="onEditClicked(parseInt(id) - 1)"
-            >
-              <i class="bi bi-arrow-left"></i>
-            </button>
-            &nbsp;
-            <button
-              class="btn btn-outline-success"
-              @click="onEditClicked(parseInt(id) + 1)"
-            >
-              <i class="bi bi-arrow-right"></i>
-            </button>
-          </div>
+        <div class="row">
+          <div class="col-sm-8">
+            <h3>
+              <ins>Scheda n. {{ id }}</ins>
+            </h3>
+            <h5 style="margin-top: 40px">
+              Numero inventario: {{ inventario }}
+            </h5>
 
-          Edit item ID #{{ id }} - OGTD #{{ ogtd }} - SGTI #{{ sgti }}
-        </h5>
+            <h5>Oggetto: {{ ogtd }}</h5>
+            <h5>Soggetto: {{ sgti }}</h5>
+          </div>
+          <div class="col-sm-4">
+            <div class="text-end">
+              <button
+                class="btn btn-outline-success"
+                @click="passItem('return')"
+                v-if="id != firstId"
+              >
+                <i class="bi bi-arrow-left"></i>
+              </button>
+              &nbsp;
+              <button
+                class="btn btn-outline-success"
+                @click="passItem('next')"
+                v-if="id != lastId"
+              >
+                <i class="bi bi-arrow-right"></i>
+              </button>
+            </div>
+            <div
+              class="text-center"
+              style="
+                border: 1px solid #999999;
+                width: 150px;
+                height: 150px;
+                float: right;
+                margin-top: 10px;
+              "
+            >
+              <img src="/logoopaSiena.png" alt="" style="margin-top: 20px" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title"></h5>
 
         <div class="card-body">
           <!-- Default Tabs -->
 
           <Form :fields="fields">
             <template v-slot:footer="{ data }">
+              <div class="buttons">
+                <button
+                  class="btn btn-sm btn-secondary"
+                  @click="onCancelClicked()"
+                >
+                  <font-awesome-icon icon="fa-solid fa-xmark" fixed-width />
+                  <span class="ms-1">Cancel</span>
+                </button>
+                <button
+                  class="btn btn-sm btn-primary"
+                  @click="onSaveClicked(data)"
+                >
+                  <font-awesome-icon
+                    icon="fa-solid fa-floppy-disk"
+                    fixed-width
+                  />
+                  <span class="ms-1">Save</span>
+                </button>
+              </div>
+
               <div class="buttons">
                 <button
                   class="btn btn-sm btn-secondary"
@@ -74,6 +125,9 @@ export default {
     const { id } = toRefs(props);
     let ogtd = ref("");
     let sgti = ref("");
+    let inventario = ref([]);
+    let firstId = ref();
+    let lastId = ref();
     // watch the route and update data based on the collection param
     watch(
       route,
@@ -102,6 +156,7 @@ export default {
     );
 
     async function fetchData() {
+      inventario.value = [];
       try {
         const response = await directus
           .items(collection.value)
@@ -111,6 +166,18 @@ export default {
         item.value = response;
         // ogtd.value = response.ogtd.ogtd;
         sgti.value = response.sgti;
+        const idInvOp = response.inventario.map(
+          ({ inventario_id }) => inventario_id
+        );
+        const opereInventario = await directus.items("inventario").readByQuery({
+          filter: {
+            id: { _in: idInvOp },
+          },
+          limit: -1,
+        });
+        for (let index = 0; index < opereInventario.data.length; index++) {
+          inventario.value.push(opereInventario.data[index].invn);
+        }
       } catch (error) {
         console.log(error);
       }
@@ -134,7 +201,6 @@ export default {
         const response = await directus
           .items(collection.value)
           .updateOne(id.value, data);
-        // console.log(response)
         alert("saved successfully");
         goToList();
       } catch (error) {
@@ -148,7 +214,30 @@ export default {
         params: { id: itemID, collection: collection.value },
       });
     }
-
+    async function passItem(action) {
+      let query = {
+        limit: -1,
+        filter: {},
+      };
+      const response = await directus
+        .items(collection.value)
+        .readByQuery(query);
+      let data = response.data;
+      let myId = id.value;
+      let index = data.findIndex((item) => item.id == myId);
+      firstId.value = data.length > 0 ? data[0].id : null;
+      lastId.value = data.length > 0 ? data[data.length - 1].id : null;
+      
+      for (let index = 0; index < fields.value.length; index++) {
+        // console.log(fields.value[index].value);
+        fields.value[index].value = null;
+      }
+      if (action === "next") {
+        onEditClicked(data[index + 1].id);
+      } else if (action === "return") {
+        onEditClicked(data[index - 1].id);
+      }
+    }
     return {
       fields,
       item,
@@ -157,6 +246,10 @@ export default {
       ogtd,
       sgti,
       onEditClicked,
+      passItem,
+      firstId,
+      lastId,
+      inventario,
     };
   },
   props: {

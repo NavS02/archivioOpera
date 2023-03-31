@@ -10,7 +10,7 @@
         aria-describedby="inputGroup-sizing-sm"
         id="resultID"
       />
-      <h5 class="card-title">Autore:</h5>
+      <h5 class="card-title">Autore (AUTN):</h5>
       <input
         type="text"
         class="form-control"
@@ -42,7 +42,7 @@
         aria-describedby="inputGroup-sizing-sm"
         id="resultOGTD"
       />
-      <h5 class="card-title">Inventario:</h5>
+      <h5 class="card-title">Inventario (INVN):</h5>
       <input
         type="text"
         class="form-control"
@@ -68,7 +68,7 @@
       </button>
       &nbsp
       <button type="button" class="btn btn-outline-danger" @click="clearData()">
-        Pulire
+        Annulla
       </button>
       <hr />
       Mostra:
@@ -81,7 +81,7 @@
         @input="infoQty()"
       />
       &nbsp
-      {{ totalResult }} Risultati...
+      {{ totalResult }} schede trovate
       <!-- <div style="float: right">
         Ricerca:
         <input
@@ -100,7 +100,7 @@
           id="flexRadioDefault1"
           checked
         />
-        <label class="form-check-label" for="flexRadioDefault1"> Llista </label>
+        <label class="form-check-label" for="flexRadioDefault1"> Lista </label>
       </div>
       <div class="form-check" style="float: right; margin-right: 10px">
         <input
@@ -136,12 +136,20 @@
                     <font-awesome-icon icon="fa-solid fa-pencil" fixed-width />
                   </button>
                   <button
+                    title="save"
+                    class="btn btn-sm btn-light text-danger"
+                    @click="onDeleteClicked(item)"
+                  >
+                    <i class="bi bi-heart"></i>
+                  </button>
+                  <button
                     title="delete"
                     class="btn btn-sm btn-light text-danger"
                     @click="onDeleteClicked(item)"
                   >
                     <font-awesome-icon icon="fa-solid fa-trash" fixed-width />
                   </button>
+
                   <!-- <button
                     title="Info"
                     class="btn btn-sm btn-light"
@@ -218,7 +226,6 @@ export default {
     function infoQty() {
       try {
         let resultLimit = document.getElementById("limit").value;
-
         const { data = [] } = itemsFiltered;
         items.value = data.slice(0, resultLimit);
 
@@ -269,7 +276,6 @@ export default {
             },
             limit: -1,
           });
-          console.log(privateData)
           if (privateData.data.length > 1) {
             const ids = privateData.data.map((item) => item.id);
             const opereAutore = await directus
@@ -280,16 +286,12 @@ export default {
                 },
                 limit: -1,
               });
-              console.log(opereAutore)
-            const operaIds = opereAutore.data.map(({ opera_id }) => opera_id);
-  console.log(operaIds)
-            query["filter"] = {
-              id:{_in: operaIds},
-            };
+            console.log(opereAutore);
+            const operaIds = opereAutore.data.map(({ id }) => id);
+            console.log(operaIds);
+            query["filter"]["autore"] = { _in: operaIds };
           } else {
-            query["filter"] = {
-              id:{_in: null},
-            };
+            query["filter"]["autore"] = { _in: null };
           }
         }
 
@@ -310,13 +312,9 @@ export default {
           });
           if (privateData.data.length > 1) {
             const ogtdId = privateData.data.map(({ id }) => id);
-             query["filter"] = {
-              ogtd:{_in: ogtdId},
-            };
+            query["filter"]["ogtd"] = { _in: ogtdId };
           } else {
-             query["filter"] = {
-              ogtd:{_in: null},
-            };
+            query["filter"]["ogtd"] = { _in: null };
           }
         }
         if (resultInv !== "") {
@@ -367,8 +365,9 @@ export default {
         const response = await directus
           .items(collection.value)
           .readByQuery(query);
-          console.log(query)
         itemsFiltered = response;
+        console.log(query);
+        console.log(response.data)
         const { data = [] } = response;
         if (data.length < 1) {
           items.value = null;
@@ -378,7 +377,6 @@ export default {
       } catch (error) {
         items.value = null;
       }
-      console.log(items.value)
       infoQty();
     }
 
