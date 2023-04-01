@@ -54,30 +54,100 @@
         <h5 class="card-title"></h5>
 
         <div class="card-body">
-          <!-- Default Tabs -->
-
           <Form :fields="fields">
+            <div class="navbar-wrapper">
+              <ul
+                class="nav nav-tabs d-flex"
+                id="myTabjustified"
+                role="tablist"
+              >
+                <li class="nav-item flex-fill" role="presentation">
+                  <button
+                    class="nav-link w-100 active"
+                    id="home-tab"
+                    data-bs-toggle="tab"
+                    data-bs-target="#home-justified"
+                    type="button"
+                    role="tab"
+                    aria-controls="home"
+                    aria-selected="true"
+                    tabindex="-1"
+                    @click="changeView('opera')"
+                  >
+                    Opera
+                  </button>
+                </li>
+                <li class="nav-item flex-fill" role="presentation">
+                  <button
+                    class="nav-link w-100"
+                    id="profile-tab"
+                    data-bs-toggle="tab"
+                    data-bs-target="#profile-justified"
+                    type="button"
+                    role="tab"
+                    aria-controls="profile"
+                    aria-selected="false"
+                    @click="changeView('dati fisici')"
+                  >
+                    Dati Fisici
+                  </button>
+                </li>
+                <li class="nav-item flex-fill" role="presentation">
+                  <button
+                    class="nav-link w-100"
+                    id="contact-tab"
+                    data-bs-toggle="tab"
+                    data-bs-target="#contact-justified"
+                    type="button"
+                    role="tab"
+                    aria-controls="contact"
+                    aria-selected="false"
+                    tabindex="-1"
+                    @click="changeView('DATI CULTURALI')"
+                  >
+                    DATI CULTURALI
+                  </button>
+                </li>
+                <li class="nav-item flex-fill" role="presentation">
+                  <button
+                    class="nav-link w-100"
+                    id="allegati-tab"
+                    data-bs-toggle="tab"
+                    data-bs-target="#allegati-justified"
+                    type="button"
+                    role="tab"
+                    aria-controls="allegati"
+                    aria-selected="false"
+                    tabindex="-1"
+                    @click="changeView('DATI ALLEGATI')"
+                  >
+                    DATI ALLEGATI
+                  </button>
+                </li>
+              </ul>
+            </div>
             <template v-slot:footer="{ data }">
-              <div class="buttons">
-                <button
-                  class="btn btn-sm btn-secondary"
-                  @click="onCancelClicked()"
-                >
-                  <font-awesome-icon icon="fa-solid fa-xmark" fixed-width />
-                  <span class="ms-1">Cancel</span>
-                </button>
-                <button
-                  class="btn btn-sm btn-primary"
-                  @click="onSaveClicked(data)"
-                >
-                  <font-awesome-icon
-                    icon="fa-solid fa-floppy-disk"
-                    fixed-width
-                  />
-                  <span class="ms-1">Save</span>
-                </button>
+              <div style="position: absolute; top: 80px; right: 80px">
+                <div class="buttons">
+                  <button
+                    class="btn btn-sm btn-secondary"
+                    @click="onCancelClicked()"
+                  >
+                    <font-awesome-icon icon="fa-solid fa-xmark" fixed-width />
+                    <span class="ms-1">Cancel</span>
+                  </button>
+                  <button
+                    class="btn btn-sm btn-primary"
+                    @click="onSaveClicked(data)"
+                  >
+                    <font-awesome-icon
+                      icon="fa-solid fa-floppy-disk"
+                      fixed-width
+                    />
+                    <span class="ms-1">Save</span>
+                  </button>
+                </div>
               </div>
-
               <div class="buttons">
                 <button
                   class="btn btn-sm btn-secondary"
@@ -128,6 +198,8 @@ export default {
     let inventario = ref([]);
     let firstId = ref();
     let lastId = ref();
+    let photoExample = ref();
+
     // watch the route and update data based on the collection param
     watch(
       route,
@@ -154,7 +226,13 @@ export default {
       },
       { immediate: true }
     );
-
+    function changeView(type) {
+      for (let index = 0; index < fields.value.length; index++) {
+        if (fields.value[index].type === "biglabel" && fields.value[index].label.toUpperCase() == type.toUpperCase()) {
+          console.log(fields.value[index]);
+        }
+      }
+    }
     async function fetchData() {
       inventario.value = [];
       try {
@@ -178,6 +256,14 @@ export default {
         for (let index = 0; index < opereInventario.data.length; index++) {
           inventario.value.push(opereInventario.data[index].invn);
         }
+        let arrayPhotos = [
+          "/notFound/notFound1.jpg",
+          "/notFound/notFound2.png",
+          "/notFound/notFound3.png",
+          "/notFound/notFound4.png",
+        ];
+        let randomIndex = Math.floor(Math.random() * arrayPhotos.length);
+        photoExample.value = arrayPhotos[randomIndex];
       } catch (error) {
         console.log(error);
       }
@@ -227,11 +313,12 @@ export default {
       let index = data.findIndex((item) => item.id == myId);
       firstId.value = data.length > 0 ? data[0].id : null;
       lastId.value = data.length > 0 ? data[data.length - 1].id : null;
-      
-      for (let index = 0; index < fields.value.length; index++) {
-        // console.log(fields.value[index].value);
-        fields.value[index].value = null;
-      }
+
+      // MANY2MANY ERROR
+      // for (let index = 0; index < fields.value.length; index++) {
+      //   // console.log(fields.value[index].value);
+      //   fields.value[index].value = null;
+      // }
       if (action === "next") {
         onEditClicked(data[index + 1].id);
       } else if (action === "return") {
@@ -250,6 +337,8 @@ export default {
       firstId,
       lastId,
       inventario,
+      photoExample,
+      changeView,
     };
   },
   props: {
@@ -263,5 +352,11 @@ export default {
 .buttons {
   display: flex;
   gap: 5px;
+}
+.navbar-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
 }
 </style>

@@ -26,7 +26,7 @@
             <h2>La pagina che stai cercando non esiste.</h2>
             
             <router-link class="btn" :to="{name: 'home'}">Tornare a casa</router-link>
-            <img src="not-found.svg" class="img-fluid py-5" alt="Page Not Found">
+            <img src="/not-found.svg" class="img-fluid py-5" alt="Page Not Found">
             <div class="credits">
               <!-- All the links in the footer should remain intact. -->
               <!-- You can delete the links only if you purchased the pro version. -->

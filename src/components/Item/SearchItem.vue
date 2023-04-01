@@ -135,11 +135,7 @@
                   >
                     <font-awesome-icon icon="fa-solid fa-pencil" fixed-width />
                   </button>
-                  <button
-                    title="save"
-                    class="btn btn-sm btn-light text-danger"
-                    @click="onDeleteClicked(item)"
-                  >
+                  <button title="save" class="btn btn-sm btn-light text-danger">
                     <i class="bi bi-heart"></i>
                   </button>
                   <button
@@ -168,6 +164,42 @@
             style="display: flex; flex-wrap: wrap; justify-content: center"
           >
             <li
+              class="page-item"
+              @click="skipPage('first')"
+              :id="'before'"
+              v-if="totalPages > 0"
+            >
+              <a class="page-link">First</a>
+            </li>
+            <li
+              class="page-item"
+              @click="skipPage('substract')"
+              :id="''"
+              v-if="totalPages > 0"
+            >
+              <a class="page-link" v-if="currentPage - 1 !== 0">
+                <span>{{ currentPage - 1 }}</span>
+              </a>
+            </li>
+            <li
+              class="page-item"
+              @click="skipPage('current')"
+              :id="'tablePage-'"
+              v-if="totalPages > 0"
+            >
+              <a class="page-link">{{ currentPage }}</a>
+            </li>
+            <li
+              class="page-item"
+              @click="skipPage('pass')"
+              :id="'tablePage-'"
+              v-if="totalPages > 0"
+            >
+              <a class="page-link" v-if="currentPage + 1 !== totalPages+1">
+                {{ currentPage + 1 }}</a
+              >
+            </li>
+            <!-- <li
               v-for="index in totalPages"
               :key="index"
               class="page-item"
@@ -175,6 +207,14 @@
               :id="'tablePage-' + index"
             >
               <a class="page-link">{{ index }}</a>
+            </li> -->
+            <li
+              class="page-item"
+              @click="skipPage('last')"
+              :id="'tablePage-'"
+              v-if="totalPages > 0"
+            >
+              <a class="page-link">Last</a>
             </li>
           </ul>
         </nav>
@@ -202,7 +242,7 @@ export default {
     var itemsFiltered = [];
     var totalResult = ref(0);
     var totalPages = ref();
-    let currentPage = null;
+    let currentPage = ref(2);
 
     // watch the route and update data based on the collection param
     watch(
@@ -232,21 +272,32 @@ export default {
         totalResult.value = itemsFiltered.data.length;
         totalPages.value = Math.ceil(totalResult.value / resultLimit);
       } catch (error) {}
+      skipPage("first")
     }
 
     // CHANGE PAGE
     function skipPage(page) {
       let resultLimit = document.getElementById("limit").value;
-      if (currentPage != null) {
-        currentPage.classList.remove("active");
-        currentPage = document.getElementById("tablePage-" + page);
-        currentPage.classList.add("active");
-      } else {
-        currentPage = document.getElementById("tablePage-" + page);
-        currentPage.classList.add("active");
+      if (page == "pass" && currentPage.value < totalPages.value) {
+        currentPage.value++;
+        console.log(currentPage.value);
+      } else if (page == "substract" && currentPage.value > 1) {
+        currentPage.value--;
+      } else if (page == "first") {
+        currentPage.value = 1;
+      } else if (page == "last") {
+        console.log(currentPage.value);
+        console.log(totalPages.value);
+
+        currentPage.value = totalPages.value;
       }
+
       const { data = [] } = itemsFiltered;
-      items.value = data.slice((page - 1) * resultLimit, page * resultLimit);
+      data.slice(1, 3);
+      items.value = data.slice(
+        (currentPage.value - 1) * resultLimit,
+        currentPage.value * resultLimit
+      );
     }
 
     async function fetchData() {
@@ -286,9 +337,7 @@ export default {
                 },
                 limit: -1,
               });
-            console.log(opereAutore);
             const operaIds = opereAutore.data.map(({ id }) => id);
-            console.log(operaIds);
             query["filter"]["autore"] = { _in: operaIds };
           } else {
             query["filter"]["autore"] = { _in: null };
@@ -366,8 +415,6 @@ export default {
           .items(collection.value)
           .readByQuery(query);
         itemsFiltered = response;
-        console.log(query);
-        console.log(response.data)
         const { data = [] } = response;
         if (data.length < 1) {
           items.value = null;
@@ -448,6 +495,7 @@ export default {
       createLink,
       totalResult,
       totalPages,
+      currentPage,
       onEditClicked,
       onDeleteClicked,
       // onInfoClicked,

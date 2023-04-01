@@ -122,10 +122,13 @@ export default {
   font-weight: bold;
 }
 .operaTitle {
-  margin: 34%;
-  font-size: 25px;
-  width:100%
-  
+  flex-grow: 1; 
+  text-align: center; 
+  white-space: nowrap; 
+  overflow: hidden; 
+  text-overflow: ellipsis; 
+  font-size: 25px; 
+  margin: 0;
 }
 
 </style>
