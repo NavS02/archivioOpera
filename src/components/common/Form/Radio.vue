@@ -19,7 +19,7 @@ import { RadioField } from '../../../models';
 
 const emit = defineEmits(['update:modelValue'])
 const props = defineProps({
-    modelValue: { type:  Boolean, default: '' },
+    modelValue: { type: [String, Boolean, Number], default: '' },
     field: { type: RadioField, default: null },
 })
 

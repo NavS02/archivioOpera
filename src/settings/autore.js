@@ -1,4 +1,4 @@
-import FormField from './FormField'
+import { FormField, ManyToManyField } from '../models'
 import autm from './autore/autm'
 import auts from './autore/auts'
 import autr from './autore/autr'
@@ -36,10 +36,10 @@ export default {
             new FormField({ name: 'auta', label: 'Auta', type: 'text', value: '' }),
             new FormField({ name: 'auth', label: 'Auth', type: 'number', value: '' }),
             new FormField({ name: 'autb', label: 'Autb', type: 'text', value: '' }),
-            /*new FormField({
+            new ManyToManyField({
                 name: 'autm',
-                label: 'autm', type: 'manyToMany', value: [],
-                relation: 'autm',
+                label: 'autm', value: [],
+                related: 'autm',
                 foreign_key: 'autm_id',
                 preview: (item) => { return `${item.id} - ${item.tipo}` },
                 fields: autm.fields,
@@ -47,7 +47,7 @@ export default {
                     if(text.trim()==='') return {}
                     return { tipo: { _contains: text } }
                 },
-            }),*/
+            }),
             new FormField({ name: 'aat', label: 'Aat', type: 'text' }),
             //pic
             // new FormField({ name: 'date_created', label: 'date_created', type: 'text' }),

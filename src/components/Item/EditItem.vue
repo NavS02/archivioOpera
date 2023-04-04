@@ -18,7 +18,6 @@
             <div class="text-end">
               <button
                 class="btn btn-outline-success"
-                @click="passItem('return')"
                 v-if="id != firstId"
               >
                 <i class="bi bi-arrow-left"></i>
@@ -26,7 +25,6 @@
               &nbsp;
               <button
                 class="btn btn-outline-success"
-                @click="passItem('next')"
                 v-if="id != lastId"
               >
                 <i class="bi bi-arrow-right"></i>
@@ -55,99 +53,7 @@
 
         <div class="card-body">
           <Form :fields="fields">
-            <div class="navbar-wrapper">
-              <ul
-                class="nav nav-tabs d-flex"
-                id="myTabjustified"
-                role="tablist"
-              >
-                <li class="nav-item flex-fill" role="presentation">
-                  <button
-                    class="nav-link w-100 active"
-                    id="home-tab"
-                    data-bs-toggle="tab"
-                    data-bs-target="#home-justified"
-                    type="button"
-                    role="tab"
-                    aria-controls="home"
-                    aria-selected="true"
-                    tabindex="-1"
-                    @click="changeView('opera')"
-                  >
-                    Opera
-                  </button>
-                </li>
-                <li class="nav-item flex-fill" role="presentation">
-                  <button
-                    class="nav-link w-100"
-                    id="profile-tab"
-                    data-bs-toggle="tab"
-                    data-bs-target="#profile-justified"
-                    type="button"
-                    role="tab"
-                    aria-controls="profile"
-                    aria-selected="false"
-                    @click="changeView('dati fisici')"
-                  >
-                    Dati Fisici
-                  </button>
-                </li>
-                <li class="nav-item flex-fill" role="presentation">
-                  <button
-                    class="nav-link w-100"
-                    id="contact-tab"
-                    data-bs-toggle="tab"
-                    data-bs-target="#contact-justified"
-                    type="button"
-                    role="tab"
-                    aria-controls="contact"
-                    aria-selected="false"
-                    tabindex="-1"
-                    @click="changeView('DATI CULTURALI')"
-                  >
-                    DATI CULTURALI
-                  </button>
-                </li>
-                <li class="nav-item flex-fill" role="presentation">
-                  <button
-                    class="nav-link w-100"
-                    id="allegati-tab"
-                    data-bs-toggle="tab"
-                    data-bs-target="#allegati-justified"
-                    type="button"
-                    role="tab"
-                    aria-controls="allegati"
-                    aria-selected="false"
-                    tabindex="-1"
-                    @click="changeView('DATI ALLEGATI')"
-                  >
-                    DATI ALLEGATI
-                  </button>
-                </li>
-              </ul>
-            </div>
             <template v-slot:footer="{ data }">
-              <div style="position: absolute; top: 80px; right: 80px">
-                <div class="buttons">
-                  <button
-                    class="btn btn-sm btn-secondary"
-                    @click="onCancelClicked()"
-                  >
-                    <font-awesome-icon icon="fa-solid fa-xmark" fixed-width />
-                    <span class="ms-1">Cancel</span>
-                  </button>
-                  <button
-                    class="btn btn-sm btn-primary"
-                    @click="onSaveClicked(data)"
-                  >
-                    <font-awesome-icon
-                      icon="fa-solid fa-floppy-disk"
-                      fixed-width
-                    />
-                    <span class="ms-1">Save</span>
-                  </button>
-                </div>
-              </div>
               <div class="buttons">
                 <button
                   class="btn btn-sm btn-secondary"
@@ -228,7 +134,10 @@ export default {
     );
     function changeView(type) {
       for (let index = 0; index < fields.value.length; index++) {
-        if (fields.value[index].type === "biglabel" && fields.value[index].label.toUpperCase() == type.toUpperCase()) {
+        if (
+          fields.value[index].type === "biglabel" &&
+          fields.value[index].label.toUpperCase() == type.toUpperCase()
+        ) {
           console.log(fields.value[index]);
         }
       }
@@ -241,6 +150,7 @@ export default {
           .readOne(id.value, {
             fields: "*.*",
           });
+          console.log(response)
         item.value = response;
         // ogtd.value = response.ogtd.ogtd;
         sgti.value = response.sgti;
@@ -277,22 +187,19 @@ export default {
       save(form);
     }
     function goToList() {
-      router.push({
-        name: "listItems",
-        params: { collection: collection.value },
-      });
+        router.push({name: 'listItems', params: { collection: collection.value }})
+
     }
     async function save(data) {
-      try {
-        const response = await directus
-          .items(collection.value)
-          .updateOne(id.value, data);
-        alert("saved successfully");
-        goToList();
-      } catch (error) {
-        console.error(error);
-        alert(error);
-      }
+     try {
+        const response = await directus.items(collection.value).updateOne(id.value, data)
+        // console.log(response)
+        alert('saved successfully')
+        goToList()
+    } catch (error) {
+        console.error(error)
+        alert(error)
+    }
     }
     function onEditClicked(itemID) {
       router.push({
@@ -300,31 +207,31 @@ export default {
         params: { id: itemID, collection: collection.value },
       });
     }
-    async function passItem(action) {
-      let query = {
-        limit: -1,
-        filter: {},
-      };
-      const response = await directus
-        .items(collection.value)
-        .readByQuery(query);
-      let data = response.data;
-      let myId = id.value;
-      let index = data.findIndex((item) => item.id == myId);
-      firstId.value = data.length > 0 ? data[0].id : null;
-      lastId.value = data.length > 0 ? data[data.length - 1].id : null;
+    // async function passItem(action) {
+    //   let query = {
+    //     limit: -1,
+    //     filter: {},
+    //   };
+    //   const response = await directus
+    //     .items(collection.value)
+    //     .readByQuery(query);
+    //   let data = response.data;
+    //   let myId = id.value;
+    //   let index = data.findIndex((item) => item.id == myId);
+    //   firstId.value = data.length > 0 ? data[0].id : null;
+    //   lastId.value = data.length > 0 ? data[data.length - 1].id : null;
 
-      // MANY2MANY ERROR
-      // for (let index = 0; index < fields.value.length; index++) {
-      //   // console.log(fields.value[index].value);
-      //   fields.value[index].value = null;
-      // }
-      if (action === "next") {
-        onEditClicked(data[index + 1].id);
-      } else if (action === "return") {
-        onEditClicked(data[index - 1].id);
-      }
-    }
+    //   // MANY2MANY ERROR
+    //   // for (let index = 0; index < fields.value.length; index++) {
+    //   //   // console.log(fields.value[index].value);
+    //   //   fields.value[index].value = null;
+    //   // }
+    //   if (action === "next") {
+    //     onEditClicked(data[index + 1].id);
+    //   } else if (action === "return") {
+    //     onEditClicked(data[index - 1].id);
+    //   }
+    // }
     return {
       fields,
       item,
@@ -333,12 +240,10 @@ export default {
       ogtd,
       sgti,
       onEditClicked,
-      passItem,
       firstId,
       lastId,
       inventario,
       photoExample,
-      changeView,
     };
   },
   props: {

@@ -1,5 +1,7 @@
 export { default as FormField } from './FormField'
 export { default as ManyToManyField } from './ManyToManyField'
+export { default as OneToManyField } from './OneToManyField'
+export { default as ManyToOneField } from './ManyToOneField'
 export { default as SelectField } from './SelectField'
 export { default as RadioField } from './RadioField'
 export { default as CheckboxField } from './CheckboxField'

@@ -2,62 +2,86 @@
   <main id="main" class="main">
     <div class="col-12">
       <!-- Search Form -->
-      <h5 class="card-title">ID:</h5>
-      <input
-        type="number"
-        class="form-control"
-        aria-label="Small"
-        aria-describedby="inputGroup-sizing-sm"
-        id="resultID"
-      />
-      <h5 class="card-title">Autore (AUTN):</h5>
-      <input
-        type="text"
-        class="form-control"
-        aria-label="Small"
-        aria-describedby="inputGroup-sizing-sm"
-        id="resultAutore"
-      />
-      <h5 class="card-title">Soggetto (SGTI):</h5>
-      <input
-        type="text"
-        class="form-control"
-        aria-label="Small"
-        aria-describedby="inputGroup-sizing-sm"
-        id="resultSGTI"
-      />
-      <h5 class="card-title">Titolo (SGTT):</h5>
-      <input
-        type="text"
-        class="form-control"
-        aria-label="Small"
-        aria-describedby="inputGroup-sizing-sm"
-        id="resultSGTT"
-      />
-      <h5 class="card-title">Oggetto (OGTD):</h5>
-      <input
-        type="text"
-        class="form-control"
-        aria-label="Small"
-        aria-describedby="inputGroup-sizing-sm"
-        id="resultOGTD"
-      />
-      <h5 class="card-title">Inventario (INVN):</h5>
-      <input
-        type="text"
-        class="form-control"
-        aria-label="Small"
-        aria-describedby="inputGroup-sizing-sm"
-        id="resultInv"
-      />
-      <h5 class="card-title">Tecnica (MTC):</h5>
-      <input
-        type="text"
-        class="form-control"
-        aria-label="Small"
-        aria-describedby="inputGroup-sizing-sm"
-        id="resultMTC"
-      />
+      <div class="row">
+        <div class="col-md-6">
+          <h5 class="card-title">ID:</h5>
+          <input
+            type="number"
+            class="form-control"
+            aria-label="Small"
+            aria-describedby="inputGroup-sizing-sm"
+            id="resultID"
+          />
+        </div>
+        <div class="col-md-6">
+          <h5 class="card-title">Autore (AUTN):</h5>
+          <input
+            type="text"
+            class="form-control"
+            aria-label="Small"
+            aria-describedby="inputGroup-sizing-sm"
+            id="resultAutore"
+          />
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <h5 class="card-title">Soggetto (SGTI):</h5>
+          <input
+            type="text"
+            class="form-control"
+            aria-label="Small"
+            aria-describedby="inputGroup-sizing-sm"
+            id="resultSGTI"
+          />
+        </div>
+        <div class="col-md-6">
+          <h5 class="card-title">Inventario (INVN):</h5>
+          <input
+            type="text"
+            class="form-control"
+            aria-label="Small"
+            aria-describedby="inputGroup-sizing-sm"
+            id="resultInv"
+          />
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <h5 class="card-title">Titolo (SGTT):</h5>
+          <input
+            type="text"
+            class="form-control"
+            aria-label="Small"
+            aria-describedby="inputGroup-sizing-sm"
+            id="resultSGTT"
+          />
+        </div>
+        <div class="col-md-6">
+          <h5 class="card-title">Oggetto (OGTD):</h5>
+          <input
+            type="text"
+            class="form-control"
+            aria-label="Small"
+            aria-describedby="inputGroup-sizing-sm"
+            id="resultOGTD"
+          />
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <h5 class="card-title">Tecnica (MTC):</h5>
+          <input
+            type="text"
+            class="form-control"
+            aria-label="Small"
+            aria-describedby="inputGroup-sizing-sm"
+            id="resultMTC"
+          />
+        </div>
+      </div>
+
       <br />
       <button
         type="button"
@@ -195,7 +219,7 @@
               :id="'tablePage-'"
               v-if="totalPages > 0"
             >
-              <a class="page-link" v-if="currentPage + 1 !== totalPages+1">
+              <a class="page-link" v-if="currentPage + 1 !== totalPages + 1">
                 {{ currentPage + 1 }}</a
               >
             </li>
@@ -272,7 +296,7 @@ export default {
         totalResult.value = itemsFiltered.data.length;
         totalPages.value = Math.ceil(totalResult.value / resultLimit);
       } catch (error) {}
-      skipPage("first")
+      skipPage("first");
     }
 
     // CHANGE PAGE
@@ -280,14 +304,11 @@ export default {
       let resultLimit = document.getElementById("limit").value;
       if (page == "pass" && currentPage.value < totalPages.value) {
         currentPage.value++;
-        console.log(currentPage.value);
       } else if (page == "substract" && currentPage.value > 1) {
         currentPage.value--;
       } else if (page == "first") {
         currentPage.value = 1;
       } else if (page == "last") {
-        console.log(currentPage.value);
-        console.log(totalPages.value);
 
         currentPage.value = totalPages.value;
       }
@@ -462,6 +483,7 @@ export default {
       document.getElementById("resultInv").value = null;
       document.getElementById("resultMTC").value = null;
       totalResult.value = 0;
+      totalPages.value=0
 
       // CLEAR TABLE
       items.value = null;
@@ -517,5 +539,8 @@ export default {
   bottom: 0;
   width: 50px;
   overflow: auto;
+}
+h5 {
+  font-size: 16px;
 }
 </style>

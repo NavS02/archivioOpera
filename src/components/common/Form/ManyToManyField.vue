@@ -1,5 +1,5 @@
 <template>
-
+<div>
     <div class="card">
         <div class="card-body items d-flex flex-column gap-2">
             <template v-for="(item, index) in items" :key="index">
@@ -86,7 +86,7 @@
             </template>
         </div>
     </Drawer>
-
+</div>
 </template>
 
 <script>

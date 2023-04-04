@@ -1,10 +1,12 @@
 <template>
+<div>
   <slot name="label">
     <label
       :for="`field-${field.name}`"
       class="form-label"
       v-html="field.label"
-    ></label>
+    >
+    </label>
   </slot>
 
   <div class="card">
@@ -110,6 +112,7 @@
       </template>
     </div>
   </Drawer>
+  </div>
 </template>
 
 <script>

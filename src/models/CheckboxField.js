@@ -7,6 +7,7 @@ import { FormField } from "."
  * provided in directus
  */
 export default class extends FormField {
+    type = 'checkbox'
     options = []
     inline = false // how to display the options
 

@@ -3,6 +3,7 @@ import { FormField } from "."
  * provide a structure for fields used in a form
  */
 export default class extends FormField {
+    type = 'select'
     emptyText = 'Select an option...'
     options = []
 

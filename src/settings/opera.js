@@ -1,5 +1,14 @@
 import FormField from "./FormField";
 import autore from "./autore";
+
+import ogtd from "./ogtd";
+import ogtt from "./ogtd";
+import ogtv from "./ogtv";
+import frm from "./frm";
+import roff from "./roff";
+import cdgg from "./cdgg";
+import acqt from "./acqt";
+
 import roz from "./opere/roz";
 import mtc from "./opere/mtc";
 import restauro from "./restauro";
@@ -7,7 +16,6 @@ import iscrizione from "./iscrizione";
 import stemmi from "./stemmi";
 import localizzazione from "./localizzazione";
 import Divider from "../models/Divider";
-
 ///import roff from './roff'
 import cronologia from "./cronologia";
 import ambito from "./ambito";
@@ -22,15 +30,19 @@ import {
   SelectField,
   ManyToManyField,
   RadioField,
+  ManyToOneField,
 } from "../models";
 
 export default {
   collection: "opera",
   fields() {
     return [
-
-
-      new FormField({ label: "Codici", type: "biglabel", value: "" }),
+      new FormField({
+        name: "codici",
+        label: "Codici",
+        type: "biglabel",
+        value: "",
+      }),
 
       // new FormField({ name: 'id', label: 'id', type: 'text' }), waiting for select box
       new FormField({
@@ -40,13 +52,14 @@ export default {
         value: "OA",
         column: "3",
       }),
+
       new RadioField({
         name: "lir",
         column: "3",
         label: "Livello di ricerca",
         type: "radio",
         value: "I",
-        inline: false,
+        inline: true,
         choices: [
           { value: "C", label: "Catalogo" },
           { value: "P", label: "Precatalogo" },
@@ -107,35 +120,68 @@ export default {
         },
       }),
       //File waiting for File upload
-      //new FormField({ name: 'ogtd', label: 'Ogtd', type: 'text', value: '' }), waiting for manytoOne box
-      // new FormField({ name: 'ogtt', label: 'Ogtt', type: 'text', value: '' }), waiting for manytoOne box
-      // new FormField({ name: 'ogtv', label: 'Ogtv', type: 'text', value: '' }), waiting for manytoOne box
 
       new Divider({ type: "divider" }),
 
-      new FormField({ label: "Oggetto", type: "biglabel", value: "" }),
-
       new FormField({
+        label: "Oggetto",
+        type: "biglabel",
+        value: "",
+        name: "oggetto",
+      }),
+
+      // WORKS
+      new ManyToOneField({
         name: "ogtd",
         label: "Definizione",
-        type: "manytoOne",
-        defaultValue: null,
+        value: null,
+        related: "ogtd",
+        type: "manyToOne",
         column: "3",
+        preview: (item) => {
+          return `${item?.id ?? "--"} - ${item?.ogtd}`;
+        },
+        fields: ogtd.fields,
+        filter: (text) => {
+          if (text.trim() === "") return {};
+          return { nome: { _contains: text } };
+        },
       }),
-      new FormField({
+
+      // TO CHECK
+      new ManyToOneField({
         name: "ogtt",
         label: "Tipologia",
-        type: "manytoOne",
-        defaultValue: null,
+        value: null,
+        related: "ogtt",
+        type: "manyToOne",
         column: "3",
+        preview: (item) => {
+          return `${item?.id ?? "--"} - ${item?.ogtt}`;
+        },
+        fields: ogtt.fields,
+        filter: (text) => {
+          if (text.trim() === "") return {};
+          return { nome: { _contains: text } };
+        },
       }),
-      new FormField({
+      new ManyToOneField({
         name: "ogtv",
         label: "Identificazione",
-        type: "manytoOne",
-        defaultValue: null,
+        value: null,
+        related: "ogtv",
+        type: "manyToOne",
         column: "3",
+        preview: (item) => {
+          return `${item?.id ?? "--"} - ${item?.ogtv}`;
+        },
+        fields: ogtv.fields,
+        filter: (text) => {
+          if (text.trim() === "") return {};
+          return { nome: { _contains: text } };
+        },
       }),
+
       new FormField({
         name: "ogtn",
         label: "Denominazione/ dedicazione",
@@ -216,9 +262,13 @@ export default {
         type: "manyToMany",
         value: [],
         relation: "cronologia",
+        column: "6",
         foreign_key: "cronologia_id",
+
         preview: (item) => {
-          return `${item?.dtzg}, ${item?.dtsi}, ${item?.dtsf} (id: ${item?.id ?? "--"})`;
+          return `${item?.dtzg}, ${item?.dtsi}, ${item?.dtsf} (id: ${
+            item?.id ?? "--"
+          })`;
         },
         fields: cronologia.fields,
         filter: (text) => {
@@ -235,6 +285,8 @@ export default {
         value: [],
         relation: "mtc",
         foreign_key: "mtc_id",
+        column: "6",
+
         preview: (item) => {
           return `${item?.mtc}  (id: ${item?.id ?? "--"})`;
         },
@@ -253,7 +305,12 @@ export default {
       }),
       new Divider({ type: "divider" }),
 
-      new FormField({ label: "Misure", type: "biglabel", value: "" }),
+      new FormField({
+        label: "Misure",
+        type: "biglabel",
+        value: "",
+        name: "misure",
+      }),
 
       //new FormField({ name: 'misu', label: 'Misu', type: 'text', defaultValue: null, column: '6'  }),
       new SelectField({
@@ -331,7 +388,7 @@ export default {
         label: "Varie",
         type: "text",
         defaultValue: null,
-        column: "12",
+        column: "3",
       }),
       new SelectField({
         name: "misr",
@@ -376,13 +433,31 @@ export default {
       // }),
 
       //frm
-
-      new FormField({
+      //   new ManyToOneField({
+      //     name: 'frm', label: 'Formato', value: null,
+      //     related: 'frm',
+      //     preview: (item) => { return `${item?.id ?? '--'} - ${item?.nome}` },
+      //     fields: museo.fields,
+      //     filter: (text) => {
+      //         if(text.trim()==='') return {}
+      //         return { nome: { _contains: text } }
+      //     },
+      // }),
+      new ManyToOneField({
         name: "frm",
         label: "Formato",
-        type: "manytoOne",
-        defaultValue: null,
-        column: "6",
+        value: null,
+        related: "frm",
+        column: "3",
+        type: "manyToOne",
+        preview: (item) => {
+          return `${item?.id ?? "--"} - ${item?.frm}`;
+        },
+        fields: frm.fields,
+        filter: (text) => {
+          if (text.trim() === "") return {};
+          return { nome: { _contains: text } };
+        },
       }),
       new Divider({ type: "divider" }),
 
@@ -390,55 +465,71 @@ export default {
         label: "Rapporto Opera finale",
         type: "biglabel",
         value: "",
+        name: "Rof",
       }),
 
       //roff
-      new FormField({
+      new ManyToOneField({
         name: "roff",
         label: "Stadio opera",
-        type: "manytoOne",
-        defaultValue: null,
-        column: "4",
+        value: null,
+        related: "roff",
+        type: "manyToOne",
+        column: "3",
+        preview: (item) => {
+          return `${item?.id ?? "--"} - ${item?.roff}`;
+        },
+        fields: roff.fields,
+        filter: (text) => {
+          if (text.trim() === "") return {};
+          return { nome: { _contains: text } };
+        },
       }),
+
       new FormField({
         name: "rofo",
         label: "Opera finale/originale",
         type: "text",
         defaultValue: null,
-        column: "4",
+        column: "3",
       }),
       new FormField({
         name: "rofs",
         label: "Soggetto opera finale/originale",
         type: "text",
         defaultValue: null,
-        column: "4",
+        column: "3",
       }),
       new FormField({
         name: "rofa",
         label: "Autore opera finale/originale ",
         type: "text",
         defaultValue: null,
-        column: "4",
+        column: "3",
       }),
       new FormField({
         name: "rofd",
         label: "Datazione opera finale/originale",
         type: "text",
         defaultValue: null,
-        column: "4",
+        column: "3",
       }),
       new FormField({
         name: "rofc",
         label: "Collocazione opera finale/originale",
         type: "text",
         defaultValue: null,
-        column: "4",
+        column: "3",
       }),
 
       new Divider({ type: "divider" }),
 
-      new FormField({ label: "Collocazione", type: "biglabel", value: "" }),
+      new FormField({
+        label: "Collocazione",
+        type: "biglabel",
+        value: "",
+        name: "collocazione",
+      }),
 
       new FormField({
         name: "ldcs",
@@ -481,6 +572,7 @@ export default {
         label: "Conservazione e Restauro",
         type: "biglabel",
         value: "",
+        name: "CeR",
       }),
       //stcc
       new SelectField({
@@ -529,66 +621,90 @@ export default {
         label: "Condizione giuridica",
         type: "biglabel",
         value: "",
+        name: "condizioneG",
       }),
 
       //cdgg
-      new FormField({
+      new ManyToOneField({
         name: "cdgg",
         label: "Indicazione generica",
-        type: "manytoOne",
-        defaultValue: null,
-        column: "6",
+        value: null,
+        related: "cdgg",
+        type: "manyToOne",
+        column: "3",
+        preview: (item) => {
+          return `${item?.id ?? "--"} - ${item?.cdgg}`;
+        },
+        fields: cdgg.fields,
+        filter: (text) => {
+          if (text.trim() === "") return {};
+          return { nome: { _contains: text } };
+        },
       }),
       new FormField({
         name: "cdgs",
         label: "Indicazione specifica",
         type: "text",
         defaultValue: null,
-        column: "6",
+        column: "3",
       }),
       new FormField({
         name: "cdgi",
         label: "Indirizzo",
         type: "text",
         defaultValue: null,
-        column: "12",
+        column: "3",
       }),
 
       //acquisizione
-
-      new FormField({
+      new ManyToOneField({
         name: "acqt",
         label: "Tipo Acquisizione",
-        type: "manytoOne",
-        defaultValue: null,
-        column: "6",
+        value: null,
+        related: "acqt",
+        type: "manyToOne",
+        column: "3",
+
+        preview: (item) => {
+          return `${item?.id ?? "--"} - ${item?.acqt}`;
+        },
+        fields: acqt.fields,
+        filter: (text) => {
+          if (text.trim() === "") return {};
+          return { nome: { _contains: text } };
+        },
       }),
       new FormField({
         name: "acqn",
         label: "Nome",
         type: "text",
         defaultValue: null,
-        column: "6",
+        column: "3",
       }),
       new FormField({
         name: "acqd",
         label: "Data Acquisizione",
         type: "text",
         defaultValue: null,
-        column: "6",
+        column: "3",
       }),
       new FormField({
         name: "acql",
         label: "Luogo Acquisizione",
         type: "text",
         defaultValue: null,
-        column: "6",
+        column: "3",
       }),
 
       //Compilazione
       new Divider({ type: "divider" }),
 
-      new FormField({ label: "Compilazione", type: "biglabel", value: "" }),
+      new FormField({
+        label: "Compilazione",
+        type: "biglabel",
+        value: "",
+        name: "compilazione",
+      }),
 
       new FormField({
         name: "cmpd",
@@ -626,10 +742,15 @@ export default {
         column: "4",
       }),
 
-           //Compilazione
-           new Divider({ type: "divider" }),
+      //Compilazione
+      new Divider({ type: "divider" }),
 
-           new FormField({ label: "Dati Fisici", type: "biglabel", value: "" }),
+      new FormField({
+        label: "Dati Fisici",
+        type: "biglabel",
+        value: "",
+        name: "dFisici",
+      }),
       /* iscrizione */
 
       new FormField({
@@ -670,7 +791,12 @@ export default {
 
       new Divider({ type: "divider" }),
 
-      new FormField({ label: "DATI CULTURALI", type: "biglabel", value: "" }),
+      new FormField({
+        label: "DATI CULTURALI",
+        type: "biglabel",
+        value: "",
+        name: "datiC",
+      }),
       /* localizzazione */
 
       new FormField({
@@ -748,7 +874,12 @@ export default {
       }),
       new Divider({ type: "divider" }),
 
-      new FormField({ label: "DATI ALLEGATI", type: "biglabel", value: "" }),
+      new FormField({
+        label: "DATI ALLEGATI",
+        type: "biglabel",
+        value: "",
+        name: "dAllegati",
+      }),
 
       /* fta */
 
@@ -819,9 +950,8 @@ export default {
       //     { value: "3", label: "alto" },
       //   ],
       // }),
-  
-      new Divider({ type: "divider" }),
 
+      new Divider({ type: "divider" }),
 
       // new RadioField({ name: 'adsm', label: 'Motivazione', type: 'radio', value: 'I',
       //      inline: false,

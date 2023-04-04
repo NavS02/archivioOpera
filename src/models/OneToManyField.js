@@ -6,7 +6,7 @@ import FormField from "./FormField"
  * there are many cities in a country, but a city can only be in one country.
  */
 export default class extends FormField {
-    type = 'manyToMany'
+    type = 'oneToMany'
     // relational data
     related = null// name of related collection
     foreign_key = null// id of related collection in many to many table
