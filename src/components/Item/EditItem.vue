@@ -52,6 +52,7 @@
         <h5 class="card-title"></h5>
 
         <div class="card-body">
+          <div style="margin-top:-50px">
           <Form :fields="fields">
             <template v-slot:footer="{ data }">
               <div class="buttons">
@@ -60,7 +61,7 @@
                   @click="onCancelClicked()"
                 >
                   <font-awesome-icon icon="fa-solid fa-xmark" fixed-width />
-                  <span class="ms-1">Cancel</span>
+                  <span class="ms-1">Annullare</span>
                 </button>
                 <button
                   class="btn btn-sm btn-primary"
@@ -70,11 +71,12 @@
                     icon="fa-solid fa-floppy-disk"
                     fixed-width
                   />
-                  <span class="ms-1">Save</span>
+                  <span class="ms-1">Salva</span>
                 </button>
               </div>
             </template>
           </Form>
+          </div>
         </div>
       </div>
     </div>
@@ -152,7 +154,7 @@ export default {
           });
           console.log(response)
         item.value = response;
-        // ogtd.value = response.ogtd.ogtd;
+        ogtd.value = response.ogtd.ogtd;
         sgti.value = response.sgti;
         const idInvOp = response.inventario.map(
           ({ inventario_id }) => inventario_id

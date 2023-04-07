@@ -34,11 +34,11 @@
             <div class="buttons d-flex gap-2">
                 <button class="btn btn-sm btn-primary" @click="onCreateNewClicked">
                     <font-awesome-icon icon="fa-solid fa-plus" fixed-width/>
-                    <span class="ms-1">Create New</span>
+                    <span class="ms-1">Crea nuovo</span>
                 </button>
                 <button class="btn btn-sm btn-primary" @click="onAddExistingClicked">
                     <font-awesome-icon icon="fa-solid fa-list" fixed-width/>
-                    <span class="ms-1">Add Existing</span>
+                    <span class="ms-1">Aggiungi esistente</span>
                 </button>
             </div>
         </div>
@@ -65,7 +65,7 @@
                     <input class="form-control" type="text" v-model.lazy="query" placeholder="3 characters min..."/>
                     <button class="btn btn-sm btn-primary" @click="onSearchClicked">
                         <font-awesome-icon icon="fa-solid fa-magnifying-glass" fixed-width/>
-                        <span class="ms-1">Search</span>
+                        <span class="ms-1">Cerca</span>
                     </button>
                 </div>
             </div>

@@ -122,27 +122,30 @@
           type="radio"
           name="flexRadioDisabled"
           id="flexRadioDefault1"
-          checked
+          v-model="selectedOption"
+          value="list"
         />
         <label class="form-check-label" for="flexRadioDefault1"> Lista </label>
       </div>
-      <div class="form-check" style="float: right; margin-right: 10px">
+      <div class="form-check" style="float: right">
         <input
           class="form-check-input"
           type="radio"
           name="flexRadioDisabled"
           id="flexRadioDefault2"
-          disabled
+          v-model="selectedOption"
+          value="card"
         />
         <label class="form-check-label" for="flexRadioDefault2"> Carta </label>
       </div>
+
       <div class="card gradient-dark-grey" style="margin-top: 30px">
         <div class="card-header">
           <div class="">
             <header class="mb-2"></header>
           </div>
         </div>
-        <div class="card-body">
+        <div class="card-body" v-if="selectedOption === 'list'">
           <div class="table-responsive">
             <Table
               class="table v-middle m-0"
@@ -170,18 +173,94 @@
                     <font-awesome-icon icon="fa-solid fa-trash" fixed-width />
                   </button>
 
-                  <!-- <button
+                  <button
                     title="Info"
                     class="btn btn-sm btn-light"
                     @click="onInfoClicked(item)"
                   >
                     <font-awesome-icon icon="fa-solid fa-eye" />
-                  </button> -->
+                  </button>
                 </div>
               </template>
             </Table>
           </div>
         </div>
+
+        <div class="card-body" v-if="selectedOption === 'card'">
+          <div class="row">
+            <div class="col-12">
+              <div class="row">
+                <div
+                  v-for="(item, index) in items"
+                  :key="index"
+                  class="card mb-3 col-md-2"
+                  style="margin-bottom: 20px"
+                >
+                  <div class="card-body">
+                    <h4 class="text-center">num {{ item.id }}</h4>
+
+                    <button
+                      title="save"
+                      class="btn btn-sm btn-light text-danger text-center"
+                      style="position: absolute; top: 10px; right: 10px"
+                    >
+                      <i class="bi bi-heart"></i>
+                    </button>
+                    <div
+                      class="text-center"
+                      style="
+                        border: 1px solid #999999;
+                        width: 200px;
+                        height: 200px;
+                        margin: 0 auto;
+                        margin-top: 15px;
+                      "
+                    >
+                      <img
+                        src="/logoopaSiena.png"
+                        alt=""
+                        style="
+                          margin-top: 20px;
+                          max-width: 150%;
+                          max-height: 150%;
+                        "
+                      />
+                    </div>
+                    <div class="text-center">
+                      <h5 style="margin-top: 20px">
+                        {{ item.inventario }}, {{ item.ogtd }}, {{ item.sgti }}
+                      </h5>
+                      <div class="actions">
+                        <button
+                          title="edit"
+                          class="btn btn-sm btn-light"
+                          @click="onEditClicked(item)"
+                        >
+                          <font-awesome-icon
+                            icon="fa-solid fa-pencil"
+                            fixed-width
+                          />
+                        </button>
+
+                        <button
+                          title="delete"
+                          class="btn btn-sm btn-light text-danger"
+                          @click="onDeleteClicked(item)"
+                        >
+                          <font-awesome-icon
+                            icon="fa-solid fa-trash"
+                            fixed-width
+                          />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <nav aria-label="...">
           <ul
             class="pagination"
@@ -267,6 +346,7 @@ export default {
     var totalResult = ref(0);
     var totalPages = ref();
     let currentPage = ref(2);
+    let selectedOption = ref("list");
 
     // watch the route and update data based on the collection param
     watch(
@@ -309,7 +389,6 @@ export default {
       } else if (page == "first") {
         currentPage.value = 1;
       } else if (page == "last") {
-
         currentPage.value = totalPages.value;
       }
 
@@ -387,6 +466,7 @@ export default {
             query["filter"]["ogtd"] = { _in: null };
           }
         }
+        // INVENTARIO
         if (resultInv !== "") {
           const privateData = await directus.items("inventario").readByQuery({
             filter: {
@@ -403,8 +483,8 @@ export default {
               },
               limit: -1,
             });
-          const idInvOp = opereInventario.data.map(({ opera_id }) => opera_id);
-          query["filter"]["id"] = {
+          const idInvOp = opereInventario.data.map(({ id }) => id);
+          query["filter"]["inventario"] = {
             _in: idInvOp,
           };
         }
@@ -446,6 +526,14 @@ export default {
         items.value = null;
       }
       infoQty();
+      fetchRelations();
+    }
+    async function fetchRelations() {
+      console.log(itemsFiltered);
+
+      const opereMtc = await directus.items("opera_mtc").readByQuery({
+        limit: -1,
+      });
     }
 
     function filterTable() {
@@ -483,7 +571,7 @@ export default {
       document.getElementById("resultInv").value = null;
       document.getElementById("resultMTC").value = null;
       totalResult.value = 0;
-      totalPages.value=0
+      totalPages.value = 0;
 
       // CLEAR TABLE
       items.value = null;
@@ -504,12 +592,12 @@ export default {
       const confirmed = confirm("Are you sure you want to delete this item?");
       if (confirmed) deleteItem(item);
     }
-    // function onInfoClicked(item) {
-    //   router.push({
-    //     name: "infoItem",
-    //     params: { collection: collection.value, id: item.id },
-    //   });
-    // }
+    function onInfoClicked(item) {
+      router.push({
+        name: "infoItem",
+        params: { collection: collection.value, id: item.id },
+      });
+    }
 
     return {
       items,
@@ -518,9 +606,10 @@ export default {
       totalResult,
       totalPages,
       currentPage,
+      selectedOption,
       onEditClicked,
       onDeleteClicked,
-      // onInfoClicked,
+      onInfoClicked,
       fetchData,
       filterTable,
       infoQty,

@@ -39,11 +39,7 @@ export default {
     class="header fixed-top d-flex align-items-center justify-content-between"
   >
     <div class="d-flex align-items-center">
-      <img
-        src="/logoSiena.png"
-        alt=""
-        style="height: 50px"
-      />
+      <img src="/logoSiena.png" alt="" style="height: 50px" />
       <i class="bi bi-list toggle-sidebar-btn" @click="toggleClass"></i>
     </div>
 
@@ -73,22 +69,19 @@ export default {
                 <h6>{{ user.first_name }}</h6>
                 <span></span>
               </li>
+              
               <li>
                 <hr class="dropdown-divider" />
               </li>
               <li>
                 <a class="dropdown-item d-flex align-items-center">
-                  <i class="ri-translate-2"></i>
-                  <span> {{ user.language }}</span>
-                </a>
-              </li>
-              <li>
-                <hr class="dropdown-divider" />
-              </li>
-              <li>
-                <a class="dropdown-item d-flex align-items-center">
+                <router-link
+                  class=""
+                  :to="{ name: 'user' }"
+                >
                   <i class="ri-mail-fill"></i>
-                  <span> {{ user.email }}</span>
+                  <span> My Profile</span></router-link
+                >
                 </a>
               </li>
               <li>
@@ -122,13 +115,12 @@ export default {
   font-weight: bold;
 }
 .operaTitle {
-  flex-grow: 1; 
-  text-align: center; 
-  white-space: nowrap; 
-  overflow: hidden; 
-  text-overflow: ellipsis; 
-  font-size: 25px; 
+  flex-grow: 1;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 25px;
   margin: 0;
 }
-
 </style>

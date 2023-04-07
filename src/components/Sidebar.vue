@@ -52,13 +52,9 @@ export default {
                 >
               </li>
               <li class="list-group-item">
-                <router-link
-                  class="nav-link"
-                  :to="{ name: 'createItem', params: { collection: 'opera' } }"
-                >
+                
                   <i class="bi bi-file-earmark-plus text-info"></i> Nuova
-                  scheda</router-link
-                >
+                  scheda
               </li>
             </ul>
           </div>

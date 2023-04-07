@@ -8,6 +8,11 @@ import frm from "./frm";
 import roff from "./roff";
 import cdgg from "./cdgg";
 import acqt from "./acqt";
+import lc from "./lc";
+import acc from "./opere/acc";
+import alnt from "./alnt";
+import stima from "./opere/stima"
+
 
 import roz from "./opere/roz";
 import mtc from "./opere/mtc";
@@ -50,12 +55,12 @@ export default {
         label: "Tipo Scheda",
         type: "text",
         value: "OA",
-        column: "3",
+        column: "2",
       }),
 
       new RadioField({
         name: "lir",
-        column: "3",
+        column: "4",
         label: "Livello di ricerca",
         type: "radio",
         value: "I",
@@ -72,15 +77,46 @@ export default {
         label: "Num. Regione",
         type: "text",
         value: "09",
-        column: "3",
+        column: "2",
       }),
       new FormField({
         name: "nctn",
         label: "Num. Catalogo",
         type: "text",
         value: "",
-        column: "3",
+        column: "2",
       }),
+
+      new FormField({
+        name: "resti",
+        label: "Restituite",
+        type: "toggle",
+        value: "",
+        column: "2",
+      }),
+
+      new FormField({
+        name: "acc",
+        label: "Altri Codici",
+        type: "manyToMany",
+        value: [],
+        column: "6",
+
+        relation: "acc",
+        foreign_key: "acc_id",
+        preview: (item) => {
+          return `${item?.acc}`;
+        },
+        fields: acc.fields,
+        filter: (text) => {
+          if (text.trim() === "") return {};
+          return { acc: { _contains: text } };
+        },
+      }),
+      /* i
+
+
+
       new FormField({
         name: "roz",
         label: "Riferimento Orizzontale",
@@ -111,12 +147,31 @@ export default {
         relation: "inventario",
         foreign_key: "inventario_id",
         preview: (item) => {
-          return `${item?.id ?? "--"} - ${item?.invn}`;
+          return ` ${item?.invn}`;
         },
         fields: inventario.fields,
         filter: (text) => {
           if (text.trim() === "") return {};
           return { inventario: { _contains: text } };
+        },
+      }),
+
+      new FormField({
+        name: "stima",
+        label: "STIMA",
+        type: "manyToMany",
+        value: [],
+        column: "6",
+
+        relation: "stima",
+        foreign_key: "stima_id",
+        preview: (item) => {
+          return ` ${item?.stima}`;
+        },
+        fields: stima.fields,
+        filter: (text) => {
+          if (text.trim() === "") return {};
+          return { stima: { _contains: text } };
         },
       }),
       //File waiting for File upload
@@ -130,7 +185,7 @@ export default {
         name: "oggetto",
       }),
 
-      // WORKS
+      // OGTD
       new ManyToOneField({
         name: "ogtd",
         label: "Definizione",
@@ -139,7 +194,7 @@ export default {
         type: "manyToOne",
         column: "3",
         preview: (item) => {
-          return `${item?.id ?? "--"} - ${item?.ogtd}`;
+          return `${item?.ogtd}`;
         },
         fields: ogtd.fields,
         filter: (text) => {
@@ -157,7 +212,7 @@ export default {
         type: "manyToOne",
         column: "3",
         preview: (item) => {
-          return `${item?.id ?? "--"} - ${item?.ogtt}`;
+          return `${item?.ogtt}`;
         },
         fields: ogtt.fields,
         filter: (text) => {
@@ -173,7 +228,7 @@ export default {
         type: "manyToOne",
         column: "3",
         preview: (item) => {
-          return `${item?.id ?? "--"} - ${item?.ogtv}`;
+          return `${item?.ogtv}`;
         },
         fields: ogtv.fields,
         filter: (text) => {
@@ -215,14 +270,14 @@ export default {
         label: "Soggetto",
         type: "text",
         value: "",
-        column: "3",
+        column: "6",
       }),
       new FormField({
         name: "sgtt",
         label: "Titolo",
         type: "text",
         value: "",
-        column: "3",
+        column: "6",
       }),
       new FormField({
         name: "deso",
@@ -335,6 +390,15 @@ export default {
         ],
       }),
       new FormField({
+        name: "mis_verificate",
+        label: "MIS verificate",
+        type: "text",
+        defaultValue: null,
+        column: "3",
+      }),
+      
+
+      new FormField({
         name: "misa",
         label: "Altezza",
         type: "text",
@@ -412,37 +476,21 @@ export default {
           { value: "ca", label: "ca" },
         ],
       }),
+      new FormField({
+        name: "mis_ingombro	",
+        label: "Ingombro",
+        type: "text",
+        defaultValue: null,
+        column: "3",
+      }),
+      new FormField({
+        name: "mis_cornice",
+        label: "Cornice",
+        type: "text",
+        defaultValue: null,
+        column: "3",
+      }),
 
-      // new CheckboxField({
-      //   name: "misr",
-      //   label: "mancanza",
-      //   type: "checkbox",
-      //   value: [],
-      //   inline: false,
-      //   column: "4",
-      //   options: [{ value: "mnr", label: "mnr" }],
-      // }),
-      // new CheckboxField({
-      //   name: "mist",
-      //   label: "validità",
-      //   type: "checkbox",
-      //   value: [],
-      //   inline: false,
-      //   column: "4",
-      //   options: [{ value: true, label: "ca" }],
-      // }),
-
-      //frm
-      //   new ManyToOneField({
-      //     name: 'frm', label: 'Formato', value: null,
-      //     related: 'frm',
-      //     preview: (item) => { return `${item?.id ?? '--'} - ${item?.nome}` },
-      //     fields: museo.fields,
-      //     filter: (text) => {
-      //         if(text.trim()==='') return {}
-      //         return { nome: { _contains: text } }
-      //     },
-      // }),
       new ManyToOneField({
         name: "frm",
         label: "Formato",
@@ -451,7 +499,7 @@ export default {
         column: "3",
         type: "manyToOne",
         preview: (item) => {
-          return `${item?.id ?? "--"} - ${item?.frm}`;
+          return `${item?.frm}`;
         },
         fields: frm.fields,
         filter: (text) => {
@@ -477,7 +525,7 @@ export default {
         type: "manyToOne",
         column: "3",
         preview: (item) => {
-          return `${item?.id ?? "--"} - ${item?.roff}`;
+          return `${item?.roff}`;
         },
         fields: roff.fields,
         filter: (text) => {
@@ -531,12 +579,36 @@ export default {
         name: "collocazione",
       }),
 
+      new ManyToOneField({
+        name: "lc",
+        label: "Localizzazione",
+        value: null,
+        related: "collocazione",
+        type: "manyToOne",
+        column: "6",
+        preview: (item) => {
+          return `${item?.ldcm}`;
+        },
+        fields: lc.fields,
+        filter: (text) => {
+          if (text.trim() === "") return {};
+          return { nome: { _contains: text } };
+        },
+      }),
+
+      new FormField({
+        name: "deposito",
+        label: "Deposito",
+        type: "toggle",
+        value: "",
+        column: "2",
+      }),
       new FormField({
         name: "ldcs",
         label: "Collocazione Specifica",
         type: "text",
         value: "",
-        column: "12",
+        column: "6",
       }),
       new FormField({
         name: "piano",
@@ -596,6 +668,20 @@ export default {
         defaultValue: null,
         column: "6",
       }),
+      new FormField({
+        name: "esposizione",
+        label: "Corretta esposizione [x scheda prestito]",
+        type: "text",
+        defaultValue: null,
+        column: "3",
+      }),
+      new FormField({
+        name: "trasporto",
+        label: "Corretto trasporto [x scheda prestito]",
+        type: "text",
+        defaultValue: null,
+        column: "3",
+      }),
 
       /* restauro */
 
@@ -607,7 +693,7 @@ export default {
         relation: "restauro",
         foreign_key: "restauro_id",
         preview: (item) => {
-          return `${item?.id ?? "--"} - ${item?.rste}`;
+          return `${item?.rste}`;
         },
         fields: restauro.fields,
         filter: (text) => {
@@ -624,6 +710,37 @@ export default {
         name: "condizioneG",
       }),
 
+      new ManyToOneField({
+        name: "alnt",
+        label: "Alienazione Tipo",
+        value: null,
+        related: "alnt",
+        type: "manyToOne",
+        column: "3",
+        preview: (item) => {
+          return `${item?.alnt}`;
+        },
+        fields: alnt.fields,
+        filter: (text) => {
+          if (text.trim() === "") return {};
+          return { alnt: { _contains: text } };
+        },
+      }),
+      new FormField({
+        name: "alnd",
+        label: "Alienazione Data",
+        type: "text",
+        defaultValue: null,
+        column: "6",
+      }),
+      new FormField({
+        name: "alnn",
+        label: "Alienazione Note",
+        type: "text",
+        defaultValue: null,
+        column: "6",
+      }),
+
       //cdgg
       new ManyToOneField({
         name: "cdgg",
@@ -633,7 +750,7 @@ export default {
         type: "manyToOne",
         column: "3",
         preview: (item) => {
-          return `${item?.id ?? "--"} - ${item?.cdgg}`;
+          return `${item?.cdgg}`;
         },
         fields: cdgg.fields,
         filter: (text) => {
@@ -666,7 +783,7 @@ export default {
         column: "3",
 
         preview: (item) => {
-          return `${item?.id ?? "--"} - ${item?.acqt}`;
+          return `${item?.acqt}`;
         },
         fields: acqt.fields,
         filter: (text) => {
@@ -758,10 +875,11 @@ export default {
         label: "Iscrizione",
         type: "manyToMany",
         value: [],
+        column: "6",
         relation: "iscrizione",
         foreign_key: "iscrizione_id",
         preview: (item) => {
-          return `${item?.id ?? "--"} - ${item?.isrp}`;
+          return `${item?.isrp}`;
         },
         fields: iscrizione.fields,
         filter: (text) => {
@@ -778,9 +896,11 @@ export default {
         type: "manyToMany",
         value: [],
         relation: "stemmi",
+        column: "6",
+
         foreign_key: "stemmi_id",
         preview: (item) => {
-          return `${item?.id ?? "--"} - ${item?.stmi}`;
+          return `${item?.stmi}`;
         },
         fields: stemmi.fields,
         filter: (text) => {
@@ -804,10 +924,11 @@ export default {
         label: "Localizzazione",
         type: "manyToMany",
         value: [],
+        column: "6",
         relation: "localizzazione",
         foreign_key: "localizzazione_id",
         preview: (item) => {
-          return `${item?.id ?? "--"} - ${item?.prcd}`;
+          return `${item?.prcd}`;
         },
         fields: localizzazione.fields,
         filter: (text) => {
@@ -823,10 +944,11 @@ export default {
         label: "Autore",
         type: "manyToMany",
         value: [],
+        column: "6",
         relation: "autore",
         foreign_key: "autore_id",
         preview: (item) => {
-          return `${item?.id ?? "--"} - ${item?.autn}`;
+          return `${item?.autn}`;
         },
         fields: autore.fields,
         filter: (text) => {
@@ -842,10 +964,11 @@ export default {
         label: "Ambito",
         type: "manyToMany",
         value: [],
+        column: "6",
         relation: "ambito",
         foreign_key: "ambito_id",
         preview: (item) => {
-          return `${item?.id ?? "--"} - ${item?.atbd}`;
+          return `${item?.atbd}`;
         },
         fields: ambito.fields,
         filter: (text) => {
@@ -861,10 +984,11 @@ export default {
         label: "Committenza",
         type: "manyToMany",
         value: [],
+        column: "6",
         relation: "committenza",
         foreign_key: "committenza_id",
         preview: (item) => {
-          return `${item?.id ?? "--"} - ${item?.cmmn}`;
+          return `${item?.cmmn}`;
         },
         fields: committenza.fields,
         filter: (text) => {
@@ -888,10 +1012,11 @@ export default {
         label: "Fotografia",
         type: "manyToMany",
         value: [],
+        column: "6",
         relation: "fta",
         foreign_key: "fta_id",
         preview: (item) => {
-          return `${item?.id ?? "--"} - ${item?.ftan}`;
+          return `${item?.ftan}`;
         },
         fields: fta.fields,
         filter: (text) => {
@@ -907,10 +1032,11 @@ export default {
         label: "Fonte",
         type: "manyToMany",
         value: [],
+        column: "6",
         relation: "fonte",
         foreign_key: "fonte_id",
         preview: (item) => {
-          return `${item?.id ?? "--"} - ${item?.fntp}`;
+          return `${item?.fntp}`;
         },
         fields: fonte.fields,
         filter: (text) => {
@@ -926,10 +1052,11 @@ export default {
         label: "Mostra",
         type: "manyToMany",
         value: [],
+        column: "6",
         relation: "mostra",
         foreign_key: "mostra_id",
         preview: (item) => {
-          return `${item?.id ?? "--"} - ${item?.mstfin}`;
+          return `${item?.mstfin}`;
         },
         fields: mostra.fields,
         filter: (text) => {
@@ -987,16 +1114,18 @@ export default {
   tableFields() {
     return [
       { key: "id", label: "ID", sortable: false },
-      { key: "tsk", label: "TSK", sortable: true },
-      { key: "lir", label: "LIR", sortable: true },
-      { key: "nctr", label: "NCTR", sortable: true },
+      // { key: "tsk", label: "TSK", sortable: true },
+      // { key: "lir", label: "LIR", sortable: true },
+      // { key: "nctr", label: "NCTR", sortable: true },
+      { key: "inventario", label: "INV", sortable: true },
       { key: "nctn", label: "NCTN", sortable: true },
-      { key: "ogtn", label: "OGTN", sortable: true },
-      { key: "ogtp", label: "OGTP", sortable: true },
-      { key: "lc", label: "Localizzazione", sortable: false },
-      // { key: "autore", label: "Autore", sortable: false },
+      { key: "autore", label: "Autore", sortable: false },
+      { key: "ogtd", label: "OGTD", sortable: true },
+      { key: "sgti", label: "SGTI", sortable: true },
+      { key: "ldcs", label: "Localizzazione", sortable: false },
+      { key: "mtc", label: "MTC", sortable: true },
       // {key:'ambito',label:'Ambito',sortable: false},
-      { key: "actions", label: "Actions", sortable: false },
+      { key: "actions", label: "Azione", sortable: false },
     ];
   },
 };

@@ -1,41 +1,411 @@
 <template>
-  <div class="content">
-    <!-- Define the HTML template to render -->
-    <div id="element">
-      <div class="container-fluid">
-        <!-- Display the collection name -->
-        <h4>{{ collection }}</h4>
+  <main id="main" class="main">
+    <section class="section profile" id="element">
+      <div class="row">
+        <div class="col-xl-4">
 
-        <div class="panel panel-default" v-show="response">
-          <!-- Display a table with data from the response object -->
-          <span v-for="(value, field) in response" :key="field">
-            <!-- If the value is not an array, display it as text -->
-            <strong>{{ field }}:</strong>
-            <span v-if="!Array.isArray(value)" id="itemName">{{ value }}</span>
+          <div class="card">
+            <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
 
-            <!-- If the value is an array, display each item as a list with its fields -->
-            <ul v-else>
-              <li v-for="(item, index) in value" :key="index">
-                <ul>
-                  <li v-for="(itemValue, itemField) in item" :key="itemField">
-                    {{ itemField }}: {{ itemValue }}
-                  </li>
-                </ul>
-              </li>
-            </ul>
-            <br />
-          </span>
+              <img src="/not-found.svg" />
+              <br>
+              <h3 class="card-title">{{ response?.sgti }}</h3>
+
+              <div class="social-links mt-2">
+                <a   @click="onPrintClicked" class="twitter"><i class="bi bi-printer"></i></a>
+
+              </div>
+            </div>
+          </div>
+
         </div>
+
+        <div class="col-xl-8">
+
+          <div class="card">
+            <div class=" tab-content pt-2 tab-pane  profile-overview card-body profile-card pt-4 d-flex flex-column">
+              <div class="row">
+                <!-- Display a table with data from the response object -->
+                <template v-for="(value, field) in response" :key="field">
+                  <!-- If the value is not an array, display it as text -->
+                  <template v-if="opera.indexOf(field) !== -1">
+                    <div v-if="value" class="col-lg-3 col-md-4 label ">{{ field }}</div>
+
+                    <div v-if="!Array.isArray(value) && value" id="itemName" class="col-lg-9 col-md-8">{{ value }}</div>
+                  </template>
+                  <!-- If the value is an array, display each item as a list with its fields -->
+                </template>
+
+
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+
+
+        <div class="col-xl-12">
+
+          <div class="card">
+            <div class="card-body pt-3">
+              <!-- Bordered Tabs -->
+              <ul class="nav nav-tabs nav-tabs-bordered" role="tablist">
+
+                <li class="nav-item" role="presentation">
+                  <button @click="greet" class="nav-link active" data-bs-toggle="tab" data-bs-target="#profile-overview"
+                    aria-selected="true" role="tab">Mostra</button>
+                </li>
+
+                <li class="nav-item" role="presentation">
+                  <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-edit" aria-selected="false"
+                    tabindex="-1" role="tab">Autore</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                  <button class="nav-link" data-bs-toggle="tab" data-bs-target="#iscrizione" aria-selected="false"
+                    tabindex="-1" role="tab">Iscrizione</button>
+                </li>
+                
+
+                <li class="nav-item" role="presentation">
+                  <button class="nav-link" data-bs-toggle="tab" data-bs-target="#ambito" aria-selected="false"
+                    tabindex="-1" role="tab">Ambito</button>
+                </li>
+                
+                <li class="nav-item" role="presentation">
+                  <button class="nav-link" data-bs-toggle="tab" data-bs-target="#restauro" aria-selected="false"
+                    tabindex="-1" role="tab">Restauro</button>
+                </li>
+        
+                <li class="nav-item" role="presentation">
+                  <button class="nav-link" data-bs-toggle="tab" data-bs-target="#stemmi" aria-selected="false"
+                    tabindex="-1" role="tab">Stemmi</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                  <button class="nav-link" data-bs-toggle="tab" data-bs-target="#fonte" aria-selected="false"
+                    tabindex="-1" role="tab">Fonte</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                  <button class="nav-link" data-bs-toggle="tab" data-bs-target="#committenza" aria-selected="false"
+                    tabindex="-1" role="tab">Committenza</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                  <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-settings" aria-selected="false"
+                    tabindex="-1" role="tab">Cronologia</button>
+                </li>
+              </ul>
+              <div class="tab-content pt-2">
+
+                <div class="tab-pane fade show active profile-overview" id="profile-overview" role="tabpanel">
+
+
+
+                  <span v-for="(value, field) in response" :key="field">
+                    <!-- If the value is not an array, display it as text -->
+
+
+                    <div v-if="field === 'mostra'">
+
+
+
+                      <!-- If the value is an array, display each item as a list with its fields -->
+
+                      <div class="row" v-for="(item, index) in value" :key="index">
+
+                        <template v-for="(itemValue, itemField) in item" :key="itemField">
+                          <!-- Check if the field name is "author" -->
+                          <li class="row" v-if="itemValue">
+                            <span v-if="itemValue" class="col-lg-1 label">
+                              {{ itemField }}
+                            </span>
+
+                            <span v-if="itemValue" class="col-lg-9 "> : {{ itemValue }} </span>
+                          </li>
+                        </template>
+
+                      </div>
+
+                    </div>
+                  </span>
+
+
+
+                </div>
+
+                <div class="tab-pane fade profile-overview pt-3" id="profile-edit" role="tabpanel">
+
+                  <span v-for="(value, field) in response" :key="field">
+                    <!-- If the value is not an array, display it as text -->
+
+
+                    <div v-if="field === 'autore'">
+
+
+
+                      <!-- If the value is an array, display each item as a list with its fields -->
+
+                      <div class="row" v-for="(item, index) in value" :key="index">
+
+                        <template v-for="(itemValue, itemField) in item" :key="itemField">
+                          <!-- Check if the field name is "author" -->
+                          <li class="row" v-if="itemValue">
+                            <span v-if="itemValue" class="col-lg-1 label">
+                              {{ itemField }}
+                            </span>
+
+                            <span v-if="itemValue" class="col-lg-9 "> : {{ itemValue }} </span>
+                          </li>
+                        </template>
+
+                      </div>
+
+                    </div>
+                  </span>
+
+
+                </div>
+
+                <div class="tab-pane  profile-overview fade pt-3" id="profile-settings" role="tabpanel">
+
+                  <span v-for="(value, field) in response" :key="field">
+                    <!-- If the value is not an array, display it as text -->
+
+
+                    <div v-if="field === 'cronologia'">
+
+
+
+                      <!-- If the value is an array, display each item as a list with its fields -->
+
+                      <div class="row" v-for="(item, index) in value" :key="index">
+
+                        <template v-for="(itemValue, itemField) in item" :key="itemField">
+                          <!-- Check if the field name is "author" -->
+                          <li class="row" v-if="itemValue">
+                            <span v-if="itemValue" class="col-lg-1 label">
+                              {{ itemField }}
+                            </span>
+
+                            <span v-if="itemValue" class="col-lg-9"> : {{ itemValue }} </span>
+                          </li>
+                        </template>
+
+                      </div>
+
+                    </div>
+                  </span>
+
+                </div>
+
+                <div class="tab-pane fade pt-3" id="ambito" role="tabpanel">
+                  <!-- Change Password Form -->
+                  <span v-for="(value, field) in response" :key="field">
+                    <!-- If the value is not an array, display it as text -->
+
+
+                    <div v-if="field === 'ambito'">
+
+
+
+                      <!-- If the value is an array, display each item as a list with its fields -->
+
+                      <div class="row" v-for="(item, index) in value" :key="index">
+
+                        <template v-for="(itemValue, itemField) in item" :key="itemField">
+                          <!-- Check if the field name is "author" -->
+                          <li class="row" v-if="itemValue">
+                            <span v-if="itemValue" class="col-lg-1 label">
+                              {{ itemField }}
+                            </span>
+
+                            <span v-if="itemValue" class="col-lg-9 "> : {{ itemValue }} </span>
+                          </li>
+                        </template>
+
+                      </div>
+
+                    </div>
+                  </span>
+
+                </div>
+
+
+                <div class="tab-pane  profile-overview fade pt-3" id="committenza" role="tabpanel">
+
+                  <span v-for="(value, field) in response" :key="field">
+                    <!-- If the value is not an array, display it as text -->
+
+
+                    <div v-if="field === 'committenza'">
+
+
+
+                      <!-- If the value is an array, display each item as a list with its fields -->
+
+                      <div class="row" v-for="(item, index) in value" :key="index">
+
+                        <template v-for="(itemValue, itemField) in item" :key="itemField">
+                          <!-- Check if the field name is "author" -->
+                          <li class="row" v-if="itemValue">
+                            <span v-if="itemValue" class="col-lg-1 label">
+                              {{ itemField }}
+                            </span>
+
+                            <span v-if="itemValue" class="col-lg-9"> : {{ itemValue }} </span>
+                          </li>
+                        </template>
+
+                      </div>
+
+                    </div>
+                  </span>
+
+                </div>
+
+
+
+
+                <div class="tab-pane  profile-overview fade pt-3" id="restauro" role="tabpanel">
+
+                  <span v-for="(value, field) in response" :key="field">
+                    <!-- If the value is not an array, display it as text -->
+
+
+                    <div v-if="field === 'restauro'">
+
+
+
+                      <!-- If the value is an array, display each item as a list with its fields -->
+
+                      <div class="row" v-for="(item, index) in value" :key="index">
+
+                        <template v-for="(itemValue, itemField) in item" :key="itemField">
+                          <!-- Check if the field name is "author" -->
+                          <li class="row" v-if="itemValue">
+                            <span v-if="itemValue" class="col-lg-1 label">
+                              {{ itemField }}
+                            </span>
+
+                            <span v-if="itemValue" class="col-lg-9"> : {{ itemValue }} </span>
+                          </li>
+                        </template>
+
+                      </div>
+
+                    </div>
+                  </span>
+
+                </div>
+
+                <div class="tab-pane  profile-overview fade pt-3" id="iscrizione" role="tabpanel">
+
+                  <span v-for="(value, field) in response" :key="field">
+                    <!-- If the value is not an array, display it as text -->
+
+
+                    <div v-if="field === 'iscrizione'">
+
+
+
+                      <!-- If the value is an array, display each item as a list with its fields -->
+
+                      <div class="row" v-for="(item, index) in value" :key="index">
+
+                        <template v-for="(itemValue, itemField) in item" :key="itemField">
+                          <!-- Check if the field name is "author" -->
+                          <li class="row" v-if="itemValue">
+                            <span v-if="itemValue" class="col-lg-1 label">
+                              {{ itemField }}
+                            </span>
+
+                            <span v-if="itemValue" class="col-lg-9"> : {{ itemValue }} </span>
+                          </li>
+                        </template>
+
+                      </div>
+
+                    </div>
+                  </span>
+
+                </div>
+
+
+                <div class="tab-pane  profile-overview fade pt-3" id="stemmi" role="tabpanel">
+
+                  <span v-for="(value, field) in response" :key="field">
+                    <!-- If the value is not an array, display it as text -->
+
+
+                    <div v-if="field === 'stemmi'">
+
+
+
+                      <!-- If the value is an array, display each item as a list with its fields -->
+
+                      <div class="row" v-for="(item, index) in value" :key="index">
+
+                        <template v-for="(itemValue, itemField) in item" :key="itemField">
+                          <!-- Check if the field name is "author" -->
+                          <li class="row" v-if="itemValue">
+                            <span v-if="itemValue" class="col-lg-1 label">
+                              {{ itemField }}
+                            </span>
+
+                            <span v-if="itemValue" class="col-lg-9"> : {{ itemValue }} </span>
+                          </li>
+                        </template>
+
+                      </div>
+
+                    </div>
+                  </span>
+
+                </div>
+
+                <div class="tab-pane  profile-overview fade pt-3" id="fonte" role="tabpanel">
+
+                  <span v-for="(value, field) in response" :key="field">
+                    <!-- If the value is not an array, display it as text -->
+
+
+                    <div v-if="field === 'fonte'">
+
+
+
+                      <!-- If the value is an array, display each item as a list with its fields -->
+
+                      <div class="row" v-for="(item, index) in value" :key="index">
+
+                        <template v-for="(itemValue, itemField) in item" :key="itemField">
+                          <!-- Check if the field name is "author" -->
+                          <li class="row" v-if="itemValue">
+                            <span v-if="itemValue" class="col-lg-1 label">
+                              {{ itemField }}
+                            </span>
+
+                            <span v-if="itemValue" class="col-lg-9"> : {{ itemValue }} </span>
+                          </li>
+                        </template>
+
+                      </div>
+
+                    </div>
+                  </span>
+
+                </div>
+
+
+
+              </div><!-- End Bordered Tabs -->
+
+            </div>
+          </div>
+
+        </div><!--  -->
+
       </div>
-    </div>
-    <button
-      class="btn btn-sm btn-primary button"
-      title="Print"
-      @click="onPrintClicked"
-    >
-      Print PDF
-    </button>
-  </div>
+    </section>
+  </main>
 </template>
 
 <script>
@@ -81,86 +451,54 @@ export default {
             .items(collection.value)
             .readOne(id.value, {
               fields:
-                "id,icona,lc,tsk,lir,nctr,nctn,roz,files,ogtd,ogtt,ogtv,ogtn,ogtp,qntn,qnts,sgti,sgtt,ldcs,piano,sala,parete,specifiche,deso,dess,desi,nsc,restauro,iscrizione,stemmi,localizzazione,roff,rofo,rofs,rofa,rofd,rofc,cronologia,autore,ambito,committenza,inventario,fotografia,fonte,mostra,acqt,acqn,acqd,acql,cdgg,cdgs,cdgi,stcc,stcs,mtc,misa,misu,misl,misp,misd,misn,miss,misg,misv,misr,mist,frm,adsp,adsm,cmpd,cmpn,fur,rvmd,rvmn,oss",
+                "*",
             });
-        } else if (collection.value == "autore") {
-          response.value = await directus
-            .items(collection.value)
-            .readOne(id.value, {
-              fields: "id,auts,autr,autn,auta,auth,autb,autm,aat,pic",
-            });
-        }
+        } 
 
         originalResponse = { ...response.value };
 
         for (let key in response.value) {
-          if (Array.isArray(response.value[key])) {
-            let responseArray = [];
-            for (let i = 0; i < response.value[key].length; i++) {
-              try {
-                let item = await directus
-                  .items(key)
-                  .readOne(response.value[key][i]);
-                delete item.user_created;
-                delete item.date_created;
-                delete item.user_updated;
-                delete item.date_updated;
-                responseArray.push(item);
-              } catch (error) {
-                console.log(
-                  "Trying to search in: " + (collection.value + "_" + key)
-                );
-                try {
-                  let itemS = await directus
-                    .items(collection.value + "_" + key)
-                    .readOne(response.value[key][i]);
-                  let newId = (key + "_id").toString();
-                  let relationalItem = await directus
-                    .items(collection.value)
-                    .readOne(itemS[newId]);
-                  delete relationalItem.user_created;
-                  delete relationalItem.date_created;
-                  delete relationalItem.user_updated;
-                  delete relationalItem.date_updated;
-                  responseArray.push(relationalItem);
-
-                  console.log("ITEM FOUND");
-                } catch (error) {
-                  console.log(
-                    "ITEM (" +
-                      key +
-                      ") with PK (" +
-                      response.value[key][i] +
-                      ") NOT FOUND (" +
-                      collection.value +
-                      "_" +
-                      key +
-                      "/" +
-                      key +
-                      ")"
-                  );
-                }
-              }
-            }
-            response.value[key] = responseArray;
-          }
-        }
-        for (let key in response.value) {
-          if (!Array.isArray(response.value[key])) {
-            if (response.value[key] !== originalResponse[key]) {
-            }
-          } else {
-            for (let i = 0; i < response.value[key].length; i++) {
-              if (response.value[key][i] !== originalResponse[key][i]) {
-              }
+      if (Array.isArray(response.value[key]) && response.value[key].length > 0) {
+        const responseArray = [];
+        for (let i = 0; i < response.value[key].length; i++) {
+          try {
+            const item = await directus
+              .items(key)
+              .readOne(response.value[key][i]);
+            const fieldsToDelete = ["user_created", "date_created", "user_updated", "date_updated"];
+            fieldsToDelete.forEach((field) => delete item[field]);
+            responseArray.push(item);
+          } catch (error) {
+            console.log("Trying to search in: " + (collection.value + "_" + key));
+            try {
+              const itemS = await directus
+                .items(collection.value + "_" + key)
+                .readOne(response.value[key][i]);
+              const newId = `${key}_id`;
+              const relationalItem = await directus
+                .items(collection.value)
+                .readOne(itemS[newId]);
+              const fieldsToDelete = ["user_created", "date_created", "user_updated", "date_updated", "autore", "roz", "ambito", "committenza", "localizzazione", "restauro", "iscrizione", "stemmi", "inventario", "fonte", "mostra", "cronologia", "mtc", "fotografia"];
+              fieldsToDelete.forEach((field) => delete relationalItem[field]);
+              responseArray.push(relationalItem);
+              console.log("ITEM FOUND");
+            } catch (error) {
+              console.log(`ITEM (${key}) with PK (${response.value[key][i]}) NOT FOUND (${collection.value}_${key}/${key})`);
             }
           }
         }
-      } catch (error) {}
-
+        response.value[key] = responseArray;
+      }
     }
 
-    return { response, loaded };
+      } catch (error) { }
+
+    }
+    const opera = ["nctn","lir","ogtd","piano","sala","parete","specifiche", "ogtt", "ogtv", "qntn", "qnts", "sgti", "sgtt", "deso", "dess", "desi", "stcc", "stcs", "misa", "misu"];
+
+
+    return { response, loaded, opera };
+
   },
   props: {
     collection: {
@@ -173,7 +511,9 @@ export default {
     },
   },
   methods: {
+
     onPrintClicked() {
+  
       var opt = {
         margin: 1,
         filename: this.id + ".pdf",
@@ -189,6 +529,23 @@ export default {
           console.log("PDF Generated");
         });
     },
+    greet(response) {
+      const autore = ["auta", "autb"];
+      let html = "";
+
+      if (response && response.__v_raw) {
+        const arrayObject = response.__v_raw;
+
+        for (let i = 0; i < arrayObject.length; i++) {
+          for (let j = 0; j < autore.length; j++) {
+            html += `<h5 class="card-title">${arrayObject[i][autore[j]]}</h5>`;
+            console.log(arrayObject[i][autore[j]]);
+          }
+        }
+      }
+
+      return html;
+    },
   },
   data() {
     return {};
@@ -197,45 +554,108 @@ export default {
 </script>
 
 <style>
-.content {
-  margin-left: 300px;
-  margin-top: 100px;
-}
-.button {
-  width: 200px;
-  margin-left: 50%;
-}
-.loader {
-  --height-of-loader: 4px;
-  --loader-color: #0071e2;
-  width: 60%;
-  height: var(--height-of-loader);
-  border-radius: 30px;
-  background-color: rgba(0, 0, 0, 0.2);
-  position: relative;
+.profile .profile-card img {
+  max-width: 100%;
 }
 
-.loader::before {
-  content: "";
-  position: absolute;
-  background: var(--loader-color);
-  top: 0;
-  left: 0;
-  width: 0%;
-  height: 100%;
-  border-radius: 30px;
-  animation: moving 1s ease-in-out infinite;
+.nav-tabs-bordered .nav-link.active {
+  background-color: #fff;
+  color: #4154f1;
+  border-bottom: 2px solid #4154f1;
 }
 
-@keyframes moving {
-  50% {
-    width: 100%;
-  }
-
-  100% {
-    width: 0;
-    right: 0;
-    left: unset;
-  }
+.nav-tabs-bordered .nav-link.active {
+  background-color: #fff;
+  color: #4154f1;
+  border-bottom: 2px solid #4154f1;
 }
+
+.nav-tabs-bordered .nav-link {
+  margin-bottom: -2px;
+  border: none;
+  color: #2c384e;
+}
+
+.profile .profile-overview .label {
+  font-weight: 600;
+  color: rgba(1, 41, 112, 0.6);
+  text-transform: capitalize;
+  padding: 8px;
+}
+
+div#itemName {
+  padding: 7px;
+}
+
+li {
+  list-style: none;
+  padding: 6px;
+}
+
+h3.card-title {
+  text-align: center;
+  text-transform: capitalize;
+}
+
+h3.card-title {
+  padding: 0px;
+  font-size: 18px;
+  font-weight: 500;
+  color: #012970;
+  font-family: "Poppins", sans-serif;
+}
+
+.profile .profile-card .social-links a {
+  font-size: 36px;
+  display: inline-block;
+  color: rgba(1, 41, 112, 0.5);
+  line-height: 0;
+  margin-right: 10px;
+  text-align: center;
+  transition: 0.3s;
+}
+
+
+
+.profile .profile-overview .row {
+  margin-bottom: 0px;
+  font-size: 15px;
+}
+
+      /* Style the tab */
+      .tab {
+        overflow: hidden;
+        border: 1px solid #ccc;
+        background-color: #f1f1f1;
+      }
+
+      /* Style the buttons inside the tab */
+      .tab button {
+        background-color: inherit;
+        float: left;
+        border: none;
+        outline: none;
+        cursor: pointer;
+        padding: 14px 16px;
+        transition: 0.3s;
+        font-size: 17px;
+      }
+
+      /* Change background color of buttons on hover */
+      .tab button:hover {
+        background-color: #ddd;
+      }
+
+      /* Create an active/current tablink class */
+      .tab button.active {
+        background-color: #ccc;
+      }
+
+      /* Style the tab content */
+      .tabcontent {
+        display: none;
+        padding: 6px 12px;
+        border: 1px solid #ccc;
+        border-top: none;
+      }
 </style>

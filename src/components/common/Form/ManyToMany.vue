@@ -1,60 +1,60 @@
 <template>
-<div>
-  <slot name="label">
-    <label
-      :for="`field-${field.name}`"
-      class="form-label"
-      v-html="field.label"
-    >
-    </label>
-  </slot>
+  <div>
+    <slot name="label">
+      <label
+        :for="`field-${field.name}`"
+        class="form-label"
+        v-html="field.label"
+      >
+      </label>
+    </slot>
 
-  <div class="card">
-    <div class="card-body items d-flex flex-column gap-2">
-      <template v-for="(item, index) in items" :key="index">
-        <div class="item d-flex p-2">
-          <div class="preview">
-            <!-- run the preview function if available -->
-            <template v-if="typeof preview == 'function'">
-              {{ preview(item.value) }}
+    <div class="card">
+      <div class="card-body items d-flex flex-column gap-2">
+        <template v-for="(item, index) in items" :key="index">
+          <div class="item d-flex p-2">
+            <div class="preview">
+              <!-- run the preview function if available -->
+              <template v-if="typeof preview == 'function'">
+                {{ preview(item.value) }}
+              </template>
+              <!-- show the id otherwise -->
+              <template v-else>
+                <span>{{ item.value.id }}</span>
+              </template>
+            </div>
+            <template v-if="item.deleted">
+              <button
+                class="btn btn-sm btn-info ms-auto"
+                @click="onRestoreClicked(item)"
+              >
+                <font-awesome-icon icon="fa-solid fa-rotate-left" fixed-width />
+              </button>
             </template>
-            <!-- show the id otherwise -->
             <template v-else>
-              <span>{{ item.value.id }}</span>
+              <button
+                class="btn btn-sm btn-danger ms-auto"
+                @click="onRemoveClicked(item)"
+              >
+                <font-awesome-icon icon="fa-solid fa-trash" fixed-width />
+              </button>
             </template>
           </div>
-          <template v-if="item.deleted">
-            <button
-              class="btn btn-sm btn-info ms-auto"
-              @click="onRestoreClicked(item)"
-            >
-              <font-awesome-icon icon="fa-solid fa-rotate-left" fixed-width />
-            </button>
-          </template>
-          <template v-else>
-            <button
-              class="btn btn-sm btn-danger ms-auto"
-              @click="onRemoveClicked(item)"
-            >
-              <font-awesome-icon icon="fa-solid fa-trash" fixed-width />
-            </button>
-          </template>
-        </div>
-        <slot :item="item"></slot>
-      </template>
+          <slot :item="item"></slot>
+        </template>
 
-      <div class="buttons d-flex gap-2">
-        <button class="btn btn-sm btn-primary" @click="onCreateNewClicked">
-          <font-awesome-icon icon="fa-solid fa-plus" fixed-width />
-          <span class="ms-1">Create New</span>
-        </button>
-        <button class="btn btn-sm btn-primary" @click="onAddExistingClicked">
-          <font-awesome-icon icon="fa-solid fa-list" fixed-width />
-          <span class="ms-1">Add Existing</span>
-        </button>
+        <div class="buttons d-flex gap-2">
+          <button class="btn btn-sm btn-primary" @click="onCreateNewClicked">
+            <font-awesome-icon icon="fa-solid fa-plus" fixed-width />
+            <span class="ms-1">Crea nuovo</span>
+          </button>
+          <button class="btn btn-sm btn-primary" @click="onAddExistingClicked">
+            <font-awesome-icon icon="fa-solid fa-list" fixed-width />
+            <span class="ms-1">Aggiungi esistente</span>
+          </button>
+        </div>
       </div>
     </div>
-  </div>
 
     <Drawer ref="createDrawer">
       <template v-slot:header>
@@ -64,54 +64,54 @@
       <MyForm :fields="newItemFields" v-model="newItem"> </MyForm>
     </Drawer>
 
-  <Drawer ref="selectDrawer">
-    <template v-slot:header>
-      <span>Select item</span>
+    <Drawer ref="selectDrawer">
+      <template v-slot:header>
+        <span>Select item</span>
 
-      <div>
-        <div class="input-group">
-          <input
-            class="form-control"
-            type="text"
-            v-model.lazy="query"
-            placeholder="3 characters min..."
-          />
-          <button class="btn btn-sm btn-primary" @click="onSearchClicked">
-            <font-awesome-icon
-              icon="fa-solid fa-magnifying-glass"
-              fixed-width
-            />
-            <span class="ms-1">Search</span>
-          </button>
-        </div>
-      </div>
-    </template>
-    <div>
-      <template v-for="(item, index) in results" :key="index">
-        <div class="card mt-2">
-          <div class="preview card-body">
+        <div>
+          <div class="input-group">
             <input
-              class="form-check-input"
-              :id="`select-${item.id}`"
-              type="checkbox"
-              v-model="selectedIDs"
-              :value="item.id"
+              class="form-control"
+              type="text"
+              v-model.lazy="query"
+              placeholder="3 characters min..."
             />
-            <!-- run the preview function if available -->
-            <label class="form-check-label ms-2" :for="`select-${item.id}`">
-              <template v-if="typeof preview == 'function'">
-                {{ preview(item) }}
-              </template>
-              <!-- show the id otherwise -->
-              <template v-else>
-                <span>{{ item.id }}</span>
-              </template>
-            </label>
+            <button class="btn btn-sm btn-primary" @click="onSearchClicked">
+              <font-awesome-icon
+                icon="fa-solid fa-magnifying-glass"
+                fixed-width
+              />
+              <span class="ms-1">Cerca</span>
+            </button>
           </div>
         </div>
       </template>
-    </div>
-  </Drawer>
+      <div>
+        <template v-for="(item, index) in results" :key="index">
+          <div class="card mt-2">
+            <div class="preview card-body">
+              <input
+                class="form-check-input"
+                :id="`select-${item.id}`"
+                type="checkbox"
+                v-model="selectedIDs"
+                :value="item.id"
+              />
+              <!-- run the preview function if available -->
+              <label class="form-check-label ms-2" :for="`select-${item.id}`">
+                <template v-if="typeof preview == 'function'">
+                  {{ preview(item) }}
+                </template>
+                <!-- show the id otherwise -->
+                <template v-else>
+                  <span>{{ item.id }}</span>
+                </template>
+              </label>
+            </div>
+          </div>
+        </template>
+      </div>
+    </Drawer>
   </div>
 </template>
 
@@ -252,6 +252,7 @@ export default {
       return item;
     }
     async function fetchIDs(ids = []) {
+  //  SOMETIMES SEND AN OBJECT
       if (ids.length == 0) return;
       // make a request filtering by id
       const response = await directus.items(relation).readByQuery({

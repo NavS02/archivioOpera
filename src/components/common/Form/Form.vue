@@ -3,6 +3,7 @@
   <slot name="header" :data="data" :fields="fields"></slot>
 
   <div class="row">
+ 
     <template v-for="(field, index) in fields" :key="index">
       <slot
         :name="`field-${field.name}`"

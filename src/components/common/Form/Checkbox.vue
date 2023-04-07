@@ -36,7 +36,6 @@ const selected = computed({
     return field.value.value ?? [];
   },
   set(value) {
-    console.log(field.value.value)
     emit("update:modelValue", field.value.options[0].value);
 
     }

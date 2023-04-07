@@ -1,5 +1,6 @@
 import MainLayout from '../layouts/MainLayout.vue'
 import Home from '../pages/Home.vue'
+import User from '../pages/User.vue'
 import Notes from '../pages/Notes.vue'
 import PageNotFound from '../pages/PageNotFound.vue'
 
@@ -26,6 +27,7 @@ import SearchItem from '../components/Item/SearchItem.vue'
 const routes = [
     { path: '/', component: MainLayout, children: [
         { path: '',  name: 'home', component: Home ,meta: { requiresAuth: true } },
+        { path: '/profile',  name: 'user', component: User ,meta: { requiresAuth: true } },
         { path: '/notes',  name: 'notes', component: Notes, meta: { requiresAuth: true }  },
         { path: '/items/search', name: 'SearchItem', component: SearchItem,meta: { requiresAuth: true }, props: false, },
         { path: '/items/:collection', component: Items, children: [
