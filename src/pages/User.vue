@@ -12,7 +12,7 @@
             <div
               class="card-body profile-card pt-4 d-flex flex-column align-items-center"
             >
-              <img src="/not-found.svg" alt="Profile" class="rounded-circle" />
+              <img :src="imageurl" alt="Profile" class="rounded-circle" />
               <h2>{{ user.first_name }} {{ user.last_name }}</h2>
               <h3>{{ user.email }}</h3>
               <button
@@ -25,7 +25,6 @@
             </div>
           </div>
         </div>
-
         <div class="col-xl-8">
           <div class="card">
             <div class="card-body pt-3">
@@ -90,6 +89,7 @@
                     aria-selected="false"
                     role="tab"
                     tabindex="-1"
+                    @click="fetchData()"
                   >
                     Favorite Items
                   </button>
@@ -101,11 +101,6 @@
                   id="profile-overview"
                   role="tabpanel"
                 >
-                  <h5 class="card-title">About</h5>
-                  <p class="small fst-italic">
-                    {{ user.description }}
-                  </p>
-
                   <h5 class="card-title">Profile Details</h5>
 
                   <div class="container">
@@ -118,7 +113,9 @@
 
                     <div class="row align-items-center justify-content-between">
                       <div class="col-lg-3 col-md-3 label">Company</div>
-                      <div class="col-lg-9 col-md-9">Opera Metropolitana</div>
+                      <div class="col-lg-9 col-md-9">
+                        Opera della Metropolitana
+                      </div>
                     </div>
 
                     <div class="row align-items-center justify-content-between">
@@ -157,20 +154,22 @@
                         >Profile Image</label
                       >
                       <div class="col-md-8 col-lg-9">
-                        <img src="/not-found.svg" alt="Profile" />
-                        <div class="pt-2">
-                          <a
-                            href="#"
-                            class="btn btn-primary btn-sm"
-                            title="Upload new profile image"
-                            ><i class="bi bi-upload"></i
-                          ></a>
-                          <a
-                            href="#"
-                            class="btn btn-danger btn-sm"
-                            title="Remove my profile image"
-                            ><i class="bi bi-trash"></i
-                          ></a>
+                        <div class="d-flex align-items-center">
+                          <img
+                            :src="imageurl"
+                            alt="Profile"
+                            class="img-thumbnail me-3"
+                            style="max-width: 150px"
+                          />
+                          <div class="flex-grow-1">
+                            <input
+                              name="File"
+                              type="file"
+                              class="form-control"
+                              id="profilePictureSelector"
+                              v-on:change="updateImage"
+                            />
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -250,7 +249,7 @@
                           class="form-control"
                           id="Job"
                           :value="user.role"
-                          readonly
+                          disabled
                         />
                       </div>
                     </div>
@@ -290,7 +289,7 @@
                     </div>
 
                     <div class="text-center">
-                      <button type="submit" class="btn btn-primary">
+                      <button type="submit" class="btn btn-primary" @click="onChangeUserData()">
                         Save Changes
                       </button>
                     </div>
@@ -377,7 +376,7 @@
                   <form>
                     <div class="row mb-3">
                       <label
-                        for="currentPassword"
+                        for="current-password"
                         class="col-md-4 col-lg-3 col-form-label"
                         >Current Password</label
                       >
@@ -386,23 +385,23 @@
                           name="password"
                           type="password"
                           class="form-control"
-                          id="currentPassword"
+                          id="current-password"
                         />
                       </div>
                     </div>
 
                     <div class="row mb-3">
                       <label
-                        for="newPassword"
+                        for="new-password"
                         class="col-md-4 col-lg-3 col-form-label"
                         >New Password</label
                       >
                       <div class="col-md-8 col-lg-9">
                         <input
-                          name="newpassword"
+                          name="new-password"
                           type="password"
                           class="form-control"
-                          id="newPassword"
+                          id="new-password"
                         />
                       </div>
                     </div>
@@ -438,53 +437,56 @@
                   id="profile-favorite-items"
                   role="tabpanel"
                 >
-                   <Table
-              class="table v-middle m-0"
-              :items="items"
-              :fields="fields"
-              id="table"
-            >
-              <template #cell(actions)="{ item, field, value }">
-                <div class="actions">
-                  <button
-                    title="edit"
-                    class="btn btn-sm btn-light"
-                  >
-                    <font-awesome-icon icon="fa-solid fa-pencil" fixed-width />
-                  </button>
-                  <button title="save" class="btn btn-sm btn-light text-danger">
-                    <i class="bi bi-heart"></i>
-                  </button>
-                  <button
-                    title="delete"
-                    class="btn btn-sm btn-light text-danger"
-                  >
-                    <font-awesome-icon icon="fa-solid fa-trash" fixed-width />
-                  </button>
-
-                  <button
-                    title="Info"
-                    class="btn btn-sm btn-light"
-                  >
-                    <font-awesome-icon icon="fa-solid fa-eye" />
-                  </button>
-                </div>
-              </template>
-            </Table>
+                  <div class="table-responsive">
+                    <Table
+                      class="table v-middle m-0"
+                      :items="items"
+                      :fields="fields"
+                      id="table"
+                    >
+                      <template #cell(actions)="{ item, field, value }">
+                        <div class="actions">
+                          <button
+                            title="save"
+                            class="btn btn-sm btn-light text-danger"
+                            @click="onSaveClicked(item)"
+                          >
+                            <i class="bi bi-heart"></i>
+                          </button>
+                          <button
+                            title="edit"
+                            class="btn btn-sm btn-light"
+                            @click="onEditClicked(item)"
+                          >
+                            <font-awesome-icon
+                              icon="fa-solid fa-pencil"
+                              fixed-width
+                            />
+                          </button>
+                        </div>
+                      </template>
+                    </Table>
+                  </div>
                 </div>
               </div>
-              <!-- End Bordered Tabs -->
             </div>
           </div>
         </div>
       </div>
     </section>
+    <footer class="footer">
+      <div class="d-flex justify-content-end" style="bottom">
+        <span class="align-self-end">User ID: {{ user.id }}</span>
+      </div>
+    </footer>
   </main>
 </template>
 <script>
-import { ref, computed } from "vue";
-import { useRouter } from "vue-router";
+import { ref, computed, watch } from "vue";
+import { useRoute, useRouter } from "vue-router";
+
 import store from "../store";
+import * as settings from "../settings/";
 import { directus } from "../API/";
 import Table from "../components/common/Table/Table.vue";
 
@@ -495,12 +497,43 @@ export default {
     const accessToken = store?.tokenInfo?.access_token;
     const authenticated = computed(() => store.authenticated);
     const user = computed(() => store.user);
-
+    const route = useRoute();
     const router = useRouter();
     const userRol = ref();
-
-    fetchData();
+    let imageurl = ref("/not-found.svg");
+    let collection = ref();
+    let fields = ref();
+    let items = ref();
+    // watch the route and update data based on the collection param
+    watch(
+      route,
+      () => {
+        collection.value = "pref";
+        if (!collection.value) return;
+        // // retrieve the settings
+        const itemSettings = settings[collection.value];
+        // // define the subset of fields you need to view in the table
+        const collectionFields = itemSettings.tableFields();
+        fields.value = collectionFields;
+      },
+      { immediate: true, deep: true }
+    );
     async function fetchData() {
+      const response = await directus.items(collection.value).readByQuery({
+        filter: {
+          user_created: {
+            _eq: user.value.id,
+          },
+        },
+      });
+      const { data = [] } = response;
+
+      items.value = data;
+    }
+    function updateImage() {
+      let img = document.getElementById("profilePictureSelector").value;
+      console.log(img);
+      imageurl.value = img;
     }
     function toggleClass() {
       this.isToggled = !this.isToggled;
@@ -511,12 +544,34 @@ export default {
       const confirmed = confirm("Are you sure you want to logout?");
       if (confirmed) router.push({ name: "logout" });
     }
+    async function onSaveClicked(item) {
+      await directus.items(collection.value).deleteOne(item.id);
+      fetchData();
+    }
+    function onEditClicked(item) {
+      router.push({
+        name: "editItem",
+        params: { id: item.id_opera, collection: "opera" },
+      });
+    }
+    async function onChangeUserData(){
+      
+    }
+    
 
     return {
       authenticated,
       user,
+      items,
+      fields,
       userRol,
+      imageurl,
       confirmLogout,
+      fetchData,
+      onSaveClicked,
+      updateImage,
+      onEditClicked,
+      onChangeUserData,
       toggleClass,
       isToggled: false,
     };

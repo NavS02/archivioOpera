@@ -155,15 +155,18 @@
             >
               <template #cell(actions)="{ item, field, value }">
                 <div class="actions">
-                  <button
-                    title="edit"
-                    class="btn btn-sm btn-light"
-                    @click="onEditClicked(item)"
-                  >
+                  <!-- <a :href="'http://localhost:5173/#/items/opera/edit/'+item.id" target="_blank"> -->
+                  <button title="edit" class="btn btn-sm btn-light">
                     <font-awesome-icon icon="fa-solid fa-pencil" fixed-width />
                   </button>
-                  <button title="save" class="btn btn-sm btn-light text-danger">
-                    <i class="bi bi-heart"></i>
+                  <!-- </a> -->
+
+                  <button
+                    title="save"
+                    class="btn btn-sm btn-light text-danger"
+                    @click="onSaveClicked(item)"
+                  >
+                    <i class="bi bi-heart" :id="'saveButton-' + item.id"></i>
                   </button>
                   <button
                     title="delete"
@@ -203,8 +206,9 @@
                       title="save"
                       class="btn btn-sm btn-light text-danger text-center"
                       style="position: absolute; top: 10px; right: 10px"
+                      @click="onSaveClicked(item)"
                     >
-                      <i class="bi bi-heart"></i>
+                      <i class="bi bi-heart" :id="'saveButton-' + item.id"></i>
                     </button>
                     <div
                       class="text-center"
@@ -251,6 +255,13 @@
                             icon="fa-solid fa-trash"
                             fixed-width
                           />
+                        </button>
+                        <button
+                          title="Info"
+                          class="btn btn-sm btn-light"
+                          @click="onInfoClicked(item)"
+                        >
+                          <font-awesome-icon icon="fa-solid fa-eye" />
                         </button>
                       </div>
                     </div>
@@ -332,12 +343,15 @@ import { useRoute, useRouter } from "vue-router";
 import { directus } from "../../API/";
 import * as settings from "../../settings/";
 import Table from "../common/Table/Table.vue";
+import store from "../../store";
 
 export default {
   components: { Table },
   setup() {
     const route = useRoute();
     const router = useRouter();
+    const user = computed(() => store.user);
+
     // infer the collection from the route
     const collection = [];
     const items = ref([]);
@@ -347,6 +361,7 @@ export default {
     var totalPages = ref();
     let currentPage = ref(2);
     let selectedOption = ref("list");
+    const url = ref();
 
     // watch the route and update data based on the collection param
     watch(
@@ -362,6 +377,9 @@ export default {
       },
       { immediate: true, deep: true }
     );
+    watch(selectedOption, () => {
+      skipPage("first");
+    });
 
     const createLink = computed(() => ({
       name: "createItem",
@@ -398,6 +416,7 @@ export default {
         (currentPage.value - 1) * resultLimit,
         currentPage.value * resultLimit
       );
+      fetchIconSaved();
     }
 
     async function fetchData() {
@@ -525,42 +544,35 @@ export default {
       } catch (error) {
         items.value = null;
       }
+      // SAVED ITEMS
       infoQty();
       fetchRelations();
     }
     async function fetchRelations() {
-      console.log(itemsFiltered);
-
       const opereMtc = await directus.items("opera_mtc").readByQuery({
         limit: -1,
       });
     }
+    async function fetchIconSaved() {
+      let query2 = {
+        limit: -1,
+        filter: {
+          user_created: {
+            _eq: user.value.id,
+          },
+        },
+      };
+      const responseSaved = await directus.items("pref").readByQuery(query2);
 
-    function filterTable() {
-      let itemsToFilter = itemsFiltered;
-      const ricercaBar = document.getElementById("ricercaBar").value;
-      let result = [];
-      let propierties = [
-        "id",
-        "tsk",
-        "lir",
-        "nctr",
-        "nctn",
-        "ogtn",
-        "ogtp",
-        "localizzazione",
-        "autore",
-      ];
+      for (let x = 0; x < responseSaved.data.length; x++) {
+        try {
+          let iconSaved = document.getElementById(
+            "saveButton-" + responseSaved.data[x].id_opera
+          );
 
-      for (let i = 0; i < itemsToFilter.data.length; i++) {
-        for (let index = 0; index < propierties.length; index++) {
-          if (itemsToFilter.data[i][propierties[index]] == ricercaBar) {
-            result.push(itemsToFilter.data[i]);
-          }
-        }
+          iconSaved.className = "bi bi-heart-fill";
+        } catch (error) {}
       }
-      itemsToFilter.data.length = 0;
-      itemsToFilter.data.push(result);
     }
     function clearData() {
       document.getElementById("resultID").value = null;
@@ -572,6 +584,7 @@ export default {
       document.getElementById("resultMTC").value = null;
       totalResult.value = 0;
       totalPages.value = 0;
+      url.value = window.location.origin;
 
       // CLEAR TABLE
       items.value = null;
@@ -598,6 +611,34 @@ export default {
         params: { collection: collection.value, id: item.id },
       });
     }
+    async function onSaveClicked(item) {
+      let iconSaved = document.getElementById("saveButton-" + item.id);
+
+      if (iconSaved.classList.contains("bi-heart")) {
+        iconSaved.className = "bi bi-heart-fill";
+        await directus.items("pref").createOne({
+          id_opera: item.id,
+        });
+      } else {
+        iconSaved.className = "bi bi-heart";
+
+        let query = {
+          limit: -1,
+          filter: {
+            id_opera: {
+              _eq: item.id,
+            },
+            user_created: {
+              _eq: user.value.id,
+            },
+          },
+        };
+
+        iconSaved.className = "bi bi-heart";
+        let response = await directus.items("pref").readByQuery(query);
+        await directus.items("pref").deleteOne(response.data[0].id);
+      }
+    }
 
     return {
       items,
@@ -610,8 +651,8 @@ export default {
       onEditClicked,
       onDeleteClicked,
       onInfoClicked,
+      onSaveClicked,
       fetchData,
-      filterTable,
       infoQty,
       clearData,
       skipPage,

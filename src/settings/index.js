@@ -44,6 +44,8 @@ export { default as atbr } from './ambito/atbr'
 /* committenza */
 export { default as committenza } from './committenza'
 
+
+
 /* inventario */
 export { default as inventario } from './inventario'
 
@@ -65,3 +67,5 @@ export { default as mtc } from './opere/mtc'
   /* bib*/
 export { default as bib } from './bib'
 export { default as biblio } from './bib/biblio'
+
+export { default as pref } from './pref'

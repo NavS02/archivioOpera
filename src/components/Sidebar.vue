@@ -52,9 +52,7 @@ export default {
                 >
               </li>
               <li class="list-group-item">
-                
-                  <i class="bi bi-file-earmark-plus text-info"></i> Nuova
-                  scheda
+                <i class="bi bi-file-earmark-plus text-info"></i> Nuova scheda
               </li>
             </ul>
           </div>
@@ -188,6 +186,33 @@ export default {
                 >
               </li>
 
+              <!---<li class="nav-item"><router-link class="nav-link" :to="{name:'listItems',params:{collection:'autore'}}">Autori</router-link></li>
+          <li class="nav-item"><router-link class="nav-link" :to="{name:'notes'}">Notes</router-link></li>--->
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="headingTwo">
+          <button
+            class="accordion-button collapsed"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#collapse3"
+            aria-expanded="false"
+            aria-controls="collapse3"
+          >
+            FUNZIONI
+          </button>
+        </h2>
+        <div
+          id="collapse3"
+          class="accordion-collapse collapse"
+          aria-labelledby="heading3"
+          data-bs-parent="#accordionExample"
+        >
+          <div class="accordion-body">
+            <ul class="list-group" id="sidebar-nav">
               <!---<li class="nav-item"><router-link class="nav-link" :to="{name:'listItems',params:{collection:'autore'}}">Autori</router-link></li>
           <li class="nav-item"><router-link class="nav-link" :to="{name:'notes'}">Notes</router-link></li>--->
             </ul>

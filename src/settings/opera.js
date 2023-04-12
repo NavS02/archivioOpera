@@ -11,8 +11,7 @@ import acqt from "./acqt";
 import lc from "./lc";
 import acc from "./opere/acc";
 import alnt from "./alnt";
-import stima from "./opere/stima"
-
+import stima from "./opere/stima";
 
 import roz from "./opere/roz";
 import mtc from "./opere/mtc";
@@ -396,7 +395,6 @@ export default {
         defaultValue: null,
         column: "3",
       }),
-      
 
       new FormField({
         name: "misa",
@@ -1044,6 +1042,26 @@ export default {
           return { fonte: { _contains: text } };
         },
       }),
+
+      // BIB
+      new FormField({
+        name: "bib",
+        label: "Bibliografia",
+        type: "manyToMany",
+        value: [],
+        column: "6",
+        relation: "bib",
+        foreign_key: "bib_id",
+        preview: (item) => {
+          return `${item?.bibx}`;
+        },
+        fields: bib.fields,
+        filter: (text) => {
+          if (text.trim() === "") return {};
+          return { bib: { _contains: text } };
+        },
+      }),
+
 
       /* mostra */
 
