@@ -63,6 +63,7 @@
                     aria-selected="false"
                     role="tab"
                     tabindex="-1"
+                    disabled
                   >
                     Settings
                   </button>
@@ -76,6 +77,7 @@
                     aria-selected="false"
                     role="tab"
                     tabindex="-1"
+                    disabled
                   >
                     Change Password
                   </button>
@@ -130,7 +132,7 @@
 
                     <div class="row align-items-center justify-content-between">
                       <div class="col-lg-3 col-md-3 label">Language</div>
-                      <div class="col-lg-9 col-md-9">{{ user.language }}</div>
+                      <div class="col-lg-9 col-md-9">IT</div>
                     </div>
 
                     <div class="row align-items-center justify-content-between">
@@ -146,7 +148,7 @@
                   role="tabpanel"
                 >
                   <!-- Profile Edit Form -->
-                  <form>
+                  <form action="">
                     <div class="row mb-3">
                       <label
                         for="profileImage"
@@ -155,20 +157,9 @@
                       >
                       <div class="col-md-8 col-lg-9">
                         <div class="d-flex align-items-center">
-                          <img
-                            :src="imageurl"
-                            alt="Profile"
-                            class="img-thumbnail me-3"
-                            style="max-width: 150px"
-                          />
                           <div class="flex-grow-1">
-                            <input
-                              name="File"
-                              type="file"
-                              class="form-control"
-                              id="profilePictureSelector"
-                              v-on:change="updateImage"
-                            />
+                            <!-- AQUI VA LA FOTO -->
+                            <Upload />
                           </div>
                         </div>
                       </div>
@@ -217,23 +208,6 @@
                           class="form-control"
                           id="description"
                           :value="user.description"
-                        />
-                      </div>
-                    </div>
-
-                    <div class="row mb-3">
-                      <label
-                        for="company"
-                        class="col-md-4 col-lg-3 col-form-label"
-                        >Company</label
-                      >
-                      <div class="col-md-8 col-lg-9">
-                        <input
-                          name="company"
-                          type="text"
-                          class="form-control"
-                          id="company"
-                          :value="user.title"
                         />
                       </div>
                     </div>
@@ -289,7 +263,11 @@
                     </div>
 
                     <div class="text-center">
-                      <button type="submit" class="btn btn-primary" @click="onChangeUserData()">
+                      <button
+                        type="submit"
+                        class="btn btn-primary"
+                        @click="onChangeUserData()"
+                      >
                         Save Changes
                       </button>
                     </div>
@@ -447,11 +425,11 @@
                       <template #cell(actions)="{ item, field, value }">
                         <div class="actions">
                           <button
-                            title="save"
+                            title="unsave"
                             class="btn btn-sm btn-light text-danger"
                             @click="onSaveClicked(item)"
                           >
-                            <i class="bi bi-heart"></i>
+                            <i class="bi bi-heart-fill"></i>
                           </button>
                           <button
                             title="edit"
@@ -462,6 +440,13 @@
                               icon="fa-solid fa-pencil"
                               fixed-width
                             />
+                          </button>
+                          <button
+                            title="Info"
+                            class="btn btn-sm btn-light"
+                            @click="onInfoClicked(item)"
+                          >
+                            <font-awesome-icon icon="fa-solid fa-eye" />
                           </button>
                         </div>
                       </template>
@@ -489,9 +474,9 @@ import store from "../store";
 import * as settings from "../settings/";
 import { directus } from "../API/";
 import Table from "../components/common/Table/Table.vue";
-
+import Upload from "../components/common/Upload/Upload.vue";
 export default {
-  components: { Table },
+  components: { Table, Upload },
 
   setup(props, context) {
     const accessToken = store?.tokenInfo?.access_token;
@@ -504,6 +489,7 @@ export default {
     let collection = ref();
     let fields = ref();
     let items = ref();
+   
     // watch the route and update data based on the collection param
     watch(
       route,
@@ -518,7 +504,10 @@ export default {
       },
       { immediate: true, deep: true }
     );
+    fetchData();
+
     async function fetchData() {
+     
       const response = await directus.items(collection.value).readByQuery({
         filter: {
           user_created: {
@@ -554,10 +543,27 @@ export default {
         params: { id: item.id_opera, collection: "opera" },
       });
     }
-    async function onChangeUserData(){
-      
+    async function onChangeUserData() {
+      let name = document.getElementById("Name").value;
+      let surname = document.getElementById("Surname").value;
+      let description = document.getElementById("description").value;
+      let country = document.getElementById("Country").value;
+      let email = document.getElementById("Email").value;
+
+      await directus.users.me.update({
+        first_name: name,
+        last_name: surname,
+        description: description,
+        location: country,
+        email: email,
+      });
     }
-    
+    function onInfoClicked(item) {
+      router.push({
+        name: "infoItem",
+        params: { collection: "opera", id: item.id_opera },
+      });
+    }
 
     return {
       authenticated,
@@ -569,6 +575,7 @@ export default {
       confirmLogout,
       fetchData,
       onSaveClicked,
+      onInfoClicked,
       updateImage,
       onEditClicked,
       onChangeUserData,

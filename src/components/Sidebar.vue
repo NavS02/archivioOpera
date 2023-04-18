@@ -212,38 +212,23 @@ export default {
           data-bs-parent="#accordionExample"
         >
           <div class="accordion-body">
-            <ul class="list-group" id="sidebar-nav">
-              <!---<li class="nav-item"><router-link class="nav-link" :to="{name:'listItems',params:{collection:'autore'}}">Autori</router-link></li>
-          <li class="nav-item"><router-link class="nav-link" :to="{name:'notes'}">Notes</router-link></li>--->
+            <ul class="list-group">
+              <li class="list-group-item">
+                <router-link class="nav-link" :to="{ name: 'model1' }">
+                  <i class="bi bi-printer"></i> Option 1</router-link
+                >
+              </li>
+              <li class="list-group-item">
+                <router-link class="nav-link" :to="{ name: 'home' }">
+                   <i class="bi bi-printer"></i> Option 2</router-link
+                >
+              </li>
             </ul>
           </div>
         </div>
       </div>
     </div>
-    <!----<ul class="sidebar-nav" id="sidebar-nav">
-    
-          <li class="nav-item">
-            <a class="nav-link collapsed" href="#">
-              <i class="bi bi-grid"></i>
-              <span>Dashboard</span>
-            </a>
-          </li> End Dashboard Nav -->
 
-    <!---- <li class="nav-item">
-            <a class="nav-link " data-bs-target="#opera-nav" data-bs-toggle="collapse" href="#">
-              <i class="bi bi-menu-button-wide"></i><span>opera</span><i class="bi bi-chevron-down ms-auto"></i>
-            </a>
-            <ul id="opera-nav" class="nav-content collapse show" data-bs-parent="#sidebar-nav">
-              <li>
-                <a href="#">
-                  <i class="bi bi-circle"></i><span>List</span>
-                </a>
-              </li>
-             
-            </ul>
-          </li> End opera Nav
-    
-        </ul>--->
   </aside>
   <!-- End Sidebar-->
 </template>

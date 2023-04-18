@@ -155,11 +155,13 @@
             >
               <template #cell(actions)="{ item, field, value }">
                 <div class="actions">
-                  <!-- <a :href="'http://localhost:5173/#/items/opera/edit/'+item.id" target="_blank"> -->
-                  <button title="edit" class="btn btn-sm btn-light">
+                  <button
+                    title="edit"
+                    class="btn btn-sm btn-light"
+                    @click="onEditClicked(item)"
+                  >
                     <font-awesome-icon icon="fa-solid fa-pencil" fixed-width />
                   </button>
-                  <!-- </a> -->
 
                   <button
                     title="save"
@@ -221,13 +223,13 @@
                       "
                     >
                       <img
-                        src="/logoopaSiena.png"
+                        :src="imageurl"
                         alt=""
                         style="
-                          margin-top: 20px;
-                          max-width: 150%;
-                          max-height: 150%;
+                          width: 200px;
+                          height: 200px;
                         "
+                        :id="'photo-' + index"
                       />
                     </div>
                     <div class="text-center">
@@ -362,6 +364,7 @@ export default {
     let currentPage = ref(2);
     let selectedOption = ref("list");
     const url = ref();
+    let imageurl = ref("/logoopaSiena.png");
 
     // watch the route and update data based on the collection param
     watch(
@@ -379,6 +382,10 @@ export default {
     );
     watch(selectedOption, () => {
       skipPage("first");
+      //IMAGES
+      if (selectedOption.value === "card" && itemsFiltered.data) {
+        fetchImg();
+      }
     });
 
     const createLink = computed(() => ({
@@ -417,6 +424,18 @@ export default {
         currentPage.value * resultLimit
       );
       fetchIconSaved();
+      
+    }
+    // NO WORKS
+    function fetchImg() {
+      console.log(items.value.length);
+      for (let index = 0; index <= items.value.length; index++) {
+        if (itemsFiltered.data[index].icona !== null) {
+         document.getElementById("photo-" + index).src= import.meta.env.VITE_API_BASE_URL+"/assets/" + itemsFiltered.data[index].icona;
+
+         
+        }
+      }
     }
 
     async function fetchData() {
@@ -534,6 +553,7 @@ export default {
         const response = await directus
           .items(collection.value)
           .readByQuery(query);
+
         itemsFiltered = response;
         const { data = [] } = response;
         if (data.length < 1) {
@@ -547,6 +567,12 @@ export default {
       // SAVED ITEMS
       infoQty();
       fetchRelations();
+
+      if (selectedOption.value === "card") {
+        setTimeout(() => {
+          fetchImg();
+        }, 1000);
+      }
     }
     async function fetchRelations() {
       const opereMtc = await directus.items("opera_mtc").readByQuery({
@@ -585,6 +611,7 @@ export default {
       totalResult.value = 0;
       totalPages.value = 0;
       url.value = window.location.origin;
+      itemsFiltered = null;
 
       // CLEAR TABLE
       items.value = null;
@@ -648,6 +675,7 @@ export default {
       totalPages,
       currentPage,
       selectedOption,
+      imageurl,
       onEditClicked,
       onDeleteClicked,
       onInfoClicked,

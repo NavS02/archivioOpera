@@ -16,17 +16,11 @@
           </div>
           <div class="col-sm-4">
             <div class="text-end">
-              <button
-                class="btn btn-outline-success"
-                v-if="id != firstId"
-              >
+              <button class="btn btn-outline-success" v-if="id != firstId">
                 <i class="bi bi-arrow-left"></i>
               </button>
               &nbsp;
-              <button
-                class="btn btn-outline-success"
-                v-if="id != lastId"
-              >
+              <button class="btn btn-outline-success" v-if="id != lastId">
                 <i class="bi bi-arrow-right"></i>
               </button>
             </div>
@@ -40,7 +34,12 @@
                 margin-top: 10px;
               "
             >
-              <img src="/logoopaSiena.png" alt="" style="margin-top: 20px" />
+            
+              <img
+                :src="imageurl"
+                alt=""
+                style="width: 150px; height: 150px"
+              />
             </div>
           </div>
         </div>
@@ -52,30 +51,30 @@
         <h5 class="card-title"></h5>
 
         <div class="card-body">
-          <div style="margin-top:-50px">
-          <Form :fields="fields">
-            <template v-slot:footer="{ data }">
-              <div class="buttons">
-                <button
-                  class="btn btn-sm btn-secondary"
-                  @click="onCancelClicked()"
-                >
-                  <font-awesome-icon icon="fa-solid fa-xmark" fixed-width />
-                  <span class="ms-1">Annullare</span>
-                </button>
-                <button
-                  class="btn btn-sm btn-primary"
-                  @click="onSaveClicked(data)"
-                >
-                  <font-awesome-icon
-                    icon="fa-solid fa-floppy-disk"
-                    fixed-width
-                  />
-                  <span class="ms-1">Salva</span>
-                </button>
-              </div>
-            </template>
-          </Form>
+          <div style="margin-top: -50px">
+            <Form :fields="fields">
+              <template v-slot:footer="{ data }">
+                <div class="buttons">
+                  <button
+                    class="btn btn-sm btn-secondary"
+                    @click="onCancelClicked()"
+                  >
+                    <font-awesome-icon icon="fa-solid fa-xmark" fixed-width />
+                    <span class="ms-1">Annullare</span>
+                  </button>
+                  <button
+                    class="btn btn-sm btn-primary"
+                    @click="onSaveClicked(data)"
+                  >
+                    <font-awesome-icon
+                      icon="fa-solid fa-floppy-disk"
+                      fixed-width
+                    />
+                    <span class="ms-1">Salva</span>
+                  </button>
+                </div>
+              </template>
+            </Form>
           </div>
         </div>
       </div>
@@ -107,7 +106,9 @@ export default {
     let firstId = ref();
     let lastId = ref();
     let photoExample = ref();
+    let imageurl = ref("/logoopaSiena.png");
 
+ 
     // watch the route and update data based on the collection param
     watch(
       route,
@@ -134,17 +135,9 @@ export default {
       },
       { immediate: true }
     );
-    function changeView(type) {
-      for (let index = 0; index < fields.value.length; index++) {
-        if (
-          fields.value[index].type === "biglabel" &&
-          fields.value[index].label.toUpperCase() == type.toUpperCase()
-        ) {
-          console.log(fields.value[index]);
-        }
-      }
-    }
+
     async function fetchData() {
+
       inventario.value = [];
       try {
         const response = await directus
@@ -153,6 +146,9 @@ export default {
             fields: "*.*",
           });
           console.log(response)
+        imageurl.value =
+          import.meta.env.VITE_API_BASE_URL+"/assets/" + response.icona.id;
+
         item.value = response;
         ogtd.value = response.ogtd.ogtd;
         sgti.value = response.sgti;
@@ -168,14 +164,7 @@ export default {
         for (let index = 0; index < opereInventario.data.length; index++) {
           inventario.value.push(opereInventario.data[index].invn);
         }
-        let arrayPhotos = [
-          "/notFound/notFound1.jpg",
-          "/notFound/notFound2.png",
-          "/notFound/notFound3.png",
-          "/notFound/notFound4.png",
-        ];
-        let randomIndex = Math.floor(Math.random() * arrayPhotos.length);
-        photoExample.value = arrayPhotos[randomIndex];
+      
       } catch (error) {
         console.log(error);
       }
@@ -189,19 +178,23 @@ export default {
       save(form);
     }
     function goToList() {
-        router.push({name: 'listItems', params: { collection: collection.value }})
-
+      router.push({
+        name: "listItems",
+        params: { collection: collection.value },
+      });
     }
     async function save(data) {
-     try {
-        const response = await directus.items(collection.value).updateOne(id.value, data)
+      try {
+        const response = await directus
+          .items(collection.value)
+          .updateOne(id.value, data);
         // console.log(response)
-        alert('saved successfully')
-        goToList()
-    } catch (error) {
-        console.error(error)
-        alert(error)
-    }
+        alert("saved successfully");
+        goToList();
+      } catch (error) {
+        console.error(error);
+        alert(error);
+      }
     }
     function onEditClicked(itemID) {
       router.push({
@@ -209,31 +202,6 @@ export default {
         params: { id: itemID, collection: collection.value },
       });
     }
-    // async function passItem(action) {
-    //   let query = {
-    //     limit: -1,
-    //     filter: {},
-    //   };
-    //   const response = await directus
-    //     .items(collection.value)
-    //     .readByQuery(query);
-    //   let data = response.data;
-    //   let myId = id.value;
-    //   let index = data.findIndex((item) => item.id == myId);
-    //   firstId.value = data.length > 0 ? data[0].id : null;
-    //   lastId.value = data.length > 0 ? data[data.length - 1].id : null;
-
-    //   // MANY2MANY ERROR
-    //   // for (let index = 0; index < fields.value.length; index++) {
-    //   //   // console.log(fields.value[index].value);
-    //   //   fields.value[index].value = null;
-    //   // }
-    //   if (action === "next") {
-    //     onEditClicked(data[index + 1].id);
-    //   } else if (action === "return") {
-    //     onEditClicked(data[index - 1].id);
-    //   }
-    // }
     return {
       fields,
       item,
@@ -246,6 +214,7 @@ export default {
       lastId,
       inventario,
       photoExample,
+      imageurl,
     };
   },
   props: {
@@ -265,5 +234,9 @@ export default {
   top: 0;
   left: 0;
   right: 0;
+}
+img:hover {
+    width: 70px;
+    height: 74px;
 }
 </style>
