@@ -244,8 +244,6 @@ async function fetchIDs(ids = []) {
     },
     limit: -1,
   });
-  console.log(response);
-  console.log(ids);
 
   const { data = [] } = response;
   return data;

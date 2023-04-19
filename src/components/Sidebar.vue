@@ -215,14 +215,10 @@ export default {
             <ul class="list-group">
               <li class="list-group-item">
                 <router-link class="nav-link" :to="{ name: 'model1' }">
-                  <i class="bi bi-printer"></i> Option 1</router-link
+                  <i class="bi bi-printer"></i> Stampa i preferiti</router-link
                 >
               </li>
-              <li class="list-group-item">
-                <router-link class="nav-link" :to="{ name: 'home' }">
-                   <i class="bi bi-printer"></i> Option 2</router-link
-                >
-              </li>
+             
             </ul>
           </div>
         </div>

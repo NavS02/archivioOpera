@@ -4,7 +4,6 @@
       <div class="card">
         <div class="card-body">
           <div v-for="(opera, index) in response" :key="index">
-            <hr />
 
             <div
               class="card-header"
@@ -505,7 +504,7 @@ export default {
     function printItem() {
       var opt = {
         margin: 0.2,
-        filename: this.id + ".pdf",
+        filename: (new Date()) + ".pdf",
         image: { type: "png", quality: 0.5 },
         html2canvas: { scale: 2, useCORS: true },
         jsPDF: { unit: "in", format: "a4", orientation: "portrait" },
@@ -531,9 +530,7 @@ export default {
               },
             },
           });
-          console.log(favItems);
           const operaIds = favItems.data.map((item) => item.id_opera);
-          console.log(operaIds);
           const responseFav = await directus
             .items(collection.value)
             .readByQuery({
@@ -542,7 +539,6 @@ export default {
               },
               limit: -1,
             });
-          console.log(responseFav);
           response.value = responseFav.data;
           // urlImg.value =
           //   import.meta.env.VITE_API_BASE_URL +

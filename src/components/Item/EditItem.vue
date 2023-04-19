@@ -34,12 +34,7 @@
                 margin-top: 10px;
               "
             >
-            
-              <img
-                :src="imageurl"
-                alt=""
-                style="width: 150px; height: 150px"
-              />
+              <img :src="imageurl" alt="" style="width: 150px; height: 150px" />
             </div>
           </div>
         </div>
@@ -54,6 +49,7 @@
           <div style="margin-top: -50px">
             <Form :fields="fields">
               <template v-slot:footer="{ data }">
+                {{ data }}
                 <div class="buttons">
                   <button
                     class="btn btn-sm btn-secondary"
@@ -83,11 +79,13 @@
 </template>
 
 <script>
-import { ref, watch, toRefs } from "vue";
+import { ref, watch, toRefs, computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { directus } from "../../API";
 import * as settings from "../../settings/";
 import Form from "../common/Form/Form.vue";
+import { client } from "@/API";
+import store from "../../store";
 
 export default {
   components: { Form },
@@ -98,6 +96,8 @@ export default {
     const collection = ref("");
     const fields = ref([]);
     const item = ref({});
+    const files = ref(new Set());
+    const user = computed(() => store.user);
 
     const { id } = toRefs(props);
     let ogtd = ref("");
@@ -107,8 +107,7 @@ export default {
     let lastId = ref();
     let photoExample = ref();
     let imageurl = ref("/logoopaSiena.png");
-
- 
+    const imagesQt = ref();
     // watch the route and update data based on the collection param
     watch(
       route,
@@ -136,8 +135,30 @@ export default {
       { immediate: true }
     );
 
-    async function fetchData() {
+    // UPLOAD IMAGES
+    async function getImagesList() {
+      console.log(fields)
+      // const options = {
+      //   transport: {
+      //     onUploadProgress: (ProgressEvent) => {
+      //       progressLoaded.value = ProgressEvent.loaded;
+      //       progressTotal.value = ProgressEvent.total;
+      //     },
+      //   },
+      // };
+      // const _directus = client(options);
+      // console.log(user.value.id);
+      // let list = await _directus.files.readByQuery({
+      //   filter: {
+      //     uploaded_by: { _eq: user.value.id },
+      //   },
+      //   sort: ["-uploaded_on"],
+      //   limit: -1,
+      // });
+      // return list.data;
 
+    }
+    async function fetchData() {
       inventario.value = [];
       try {
         const response = await directus
@@ -145,9 +166,16 @@ export default {
           .readOne(id.value, {
             fields: "*.*",
           });
-          console.log(response)
-        imageurl.value =
-          import.meta.env.VITE_API_BASE_URL+"/assets/" + response.icona.id;
+        console.log(response);
+        getImagesList();
+
+        //           const responseImg= await directus.items("files").readByQuery();
+        // console.log(responseImg)
+
+        if (response.icona !== null) {
+          imageurl.value =
+            import.meta.env.VITE_API_BASE_URL + "/assets/" + response.icona.id;
+        }
 
         item.value = response;
         ogtd.value = response.ogtd.ogtd;
@@ -164,7 +192,9 @@ export default {
         for (let index = 0; index < opereInventario.data.length; index++) {
           inventario.value.push(opereInventario.data[index].invn);
         }
-      
+      // imagesQt.value = getImagesList();
+      // console.log(getImagesList())
+
       } catch (error) {
         console.log(error);
       }
@@ -189,6 +219,12 @@ export default {
           .items(collection.value)
           .updateOne(id.value, data);
         // console.log(response)
+      console.log(imagesQt.value)
+      console.log(getImagesList().length)
+
+if(imagesQt.value < getImagesList().length){
+  data.icona=getImagesList()[0]
+}
         alert("saved successfully");
         goToList();
       } catch (error) {
@@ -236,7 +272,7 @@ export default {
   right: 0;
 }
 img:hover {
-    width: 70px;
-    height: 74px;
+  width: 70px;
+  height: 74px;
 }
 </style>

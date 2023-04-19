@@ -3,7 +3,6 @@
   <slot name="header" :data="data" :fields="fields"></slot>
 
   <div class="row">
- 
     <template v-for="(field, index) in fields" :key="index">
       <slot
         :name="`field-${field.name}`"
@@ -19,6 +18,12 @@
         <template v-else-if="field.type == 'oneToMany'">
           <div id="alignp-1" :class="`col-md-${field.column}`">
             <OneToMany v-model="field.value" :field="field" />
+          </div>
+        </template>
+        <template v-else-if="field.type == 'upload'">
+          <div id="alignp-1" :class="`col-md-${field.column}`">
+            {{field.label}}
+            <Upload />
           </div>
         </template>
         <template v-else-if="field.type == 'manyToOne'">
@@ -112,7 +117,7 @@
 import { ref, toRefs, watch, computed } from "vue";
 import ManyToMany from "./ManyToMany.vue";
 import ManyToOne from "./ManyToOne.vue";
-
+import Upload from "../Upload/Upload.vue";
 import Toggle from "./Toggle.vue";
 import Checkbox from "./Checkbox.vue";
 import SelectDropdown from "./SelectDropdown.vue";
@@ -134,97 +139,7 @@ const data = computed(() => {
   const _data = Object.fromEntries(keyValuesList);
   emit("update:modelValue", _data);
   return _data;
-}); // form data (will be passed as prop in the slots)
-// // function changeView(type) {
-//   const operaFields = [
-//     "codici",
-//     "oggetto",
-//     "misure",
-//     "Rof",
-//     "collocazione",
-//     "CeR",
-//     "condizioneG",
-//     "compilazione",
-//   ];
-//   const dCultFields = ["datiC"];
-//   const dFisiciFields = ["dFisici"];
-//   const dAllegatiFields = ["dAllegati"];
-
-//   finalFields.value = [];
-//   let prox = false;
-//   if (type == "opera") {
-//     for (let i = 0; i < fields.value.length; i++) {
-//       const currentField = fields.value[i];
-//       if (
-//         currentField.type === "biglabel" &&
-//         !operaFields.includes(currentField.name)
-//       ) {
-//         break;
-//       }
-//       finalFields.value.push(currentField);
-//     }
-//   }
-
-//   if (type == "DATI CULTURALI") {
-//     for (let index = 0; index < fields.value.length; index++) {
-//       const currentField = fields.value[index];
-
-//       if (
-//         currentField.type === "biglabel" &&
-//         dCultFields.includes(currentField.name)
-//       ) {
-//         prox = true;
-//       } else if (
-//         currentField.type === "biglabel" &&
-//         !dCultFields.includes(currentField.name)
-//       ) {
-//         prox = false;
-//       }
-//       if (prox) {
-//         finalFields.value.push(currentField);
-//       }
-//     }
-//   }
-//   if (type == "dati fisici") {
-//     for (let index = 0; index < fields.value.length; index++) {
-//       const currentField = fields.value[index];
-//       if (
-//         currentField.type === "biglabel" &&
-//         dFisiciFields.includes(currentField.name)
-//       ) {
-//         prox = true;
-//       } else if (
-//         currentField.type === "biglabel" &&
-//         !dFisiciFields.includes(currentField.name)
-//       ) {
-//         prox = false;
-//       }
-//       if (prox) {
-//         finalFields.value.push(currentField);
-//       }
-//     }
-//   }
-
-//   if (type == "DATI ALLEGATI") {
-//     for (let index = 0; index < fields.value.length; index++) {
-//       const currentField = fields.value[index];
-//       if (
-//         currentField.type === "biglabel" &&
-//         dAllegatiFields.includes(currentField.name)
-//       ) {
-//         prox = true;
-//       } else if (
-//         currentField.type === "biglabel" &&
-//         !dAllegatiFields.includes(currentField.name)
-//       ) {
-//         prox = false;
-//       }
-//       if (prox) {
-//         finalFields.value.push(currentField);
-//       }
-//     }
-//   }
-// }
+});
 </script>
 
 <style scoped></style>

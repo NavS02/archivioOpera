@@ -7,9 +7,9 @@
             <div
               class="card-body profile-card pt-4 d-flex flex-column align-items-center"
             >
-              <img src="/not-found.svg" />
+              <img :src="imgurl" />
               <br />
-              <h3 class="card-title">{{ resp.sgti }}</h3>
+              <h3 class="card-title">{{ response?.sgti }}</h3>
 
               <div class="social-links mt-2">
                 <a @click="onPrintClicked" class="twitter"
@@ -571,6 +571,7 @@ export default {
     const response = ref(null);
     const responseArray = [];
     var loaded = false;
+    let imgurl = ref("/not-found.svg");
 
     // Watch for changes in the route object
     watch(
@@ -657,6 +658,12 @@ export default {
                   );
                   responseArray.push(relationalItem);
                   console.log("ITEM FOUND");
+                  if (response.icona !== null) {
+                    imgurl.value =
+                      import.meta.env.VITE_API_BASE_URL +
+                      "/assets/" +
+                      response.value.icona;
+                  }
                 } catch (error) {
                   console.log(
                     `ITEM (${key}) with PK (${response.value[key][i]}) NOT FOUND (${collection.value}_${key}/${key})`
@@ -693,7 +700,7 @@ export default {
       "misu",
     ];
 
-    return { response, loaded, opera };
+    return { response, loaded, opera, imgurl };
   },
   props: {
     collection: {

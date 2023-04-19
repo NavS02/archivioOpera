@@ -428,14 +428,14 @@ export default {
     }
     // NO WORKS
     function fetchImg() {
-      console.log(items.value.length);
-      for (let index = 0; index <= items.value.length; index++) {
-        if (itemsFiltered.data[index].icona !== null) {
-         document.getElementById("photo-" + index).src= import.meta.env.VITE_API_BASE_URL+"/assets/" + itemsFiltered.data[index].icona;
+      // console.log(items.value.length);
+      // for (let index = 0; index <= items.value.length; index++) {
+      //   if (itemsFiltered.data[index].icona !== null) {
+      //    document.getElementById("photo-" + index).src= import.meta.env.VITE_API_BASE_URL+"/assets/" + itemsFiltered.data[index].icona;
 
          
-        }
-      }
+      //   }
+      // }
     }
 
     async function fetchData() {

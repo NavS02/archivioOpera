@@ -42,6 +42,13 @@ export default {
   fields() {
     return [
       new FormField({
+        name: "icona",
+        label: "Icona",
+        type: "upload",
+        value: "",
+        column: "12",
+      }),
+      new FormField({
         name: "codici",
         label: "Codici",
         type: "biglabel",
@@ -137,14 +144,14 @@ export default {
       /* inventario */
 
       new FormField({
-        name: "inventario",
+        name: "inv",
         label: "Numero Inventario",
         type: "manyToMany",
         value: [],
         column: "6",
 
-        relation: "inventario",
-        foreign_key: "inventario_id",
+        relation: "inv",
+        foreign_key: "inv_id",
         preview: (item) => {
           return ` ${item?.invn}`;
         },

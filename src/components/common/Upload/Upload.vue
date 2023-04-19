@@ -12,7 +12,6 @@
       </template>
     </DragAndDrop>
 
-
     <div class="d-flex flex-column gap-2 mt-2 file-list-wrapper">
       <template v-for="(file, index) in uploads">
           <FileEntry :file="file" @fileRemoved="onFileRemoved"/>
